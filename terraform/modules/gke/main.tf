@@ -4,9 +4,14 @@ resource "google_container_cluster" "this" {
 
   network    = var.network
   subnetwork = var.subnetwork
-
+  deletion_protection = false
   remove_default_node_pool = true
   initial_node_count       = 1
+  
+  node_config {
+    #machine_type = "e2-medium"
+    disk_size_gb = 12
+  }
 
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
