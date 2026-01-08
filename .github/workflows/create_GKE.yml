@@ -52,6 +52,11 @@ jobs:
         with:
           terraform_version: 1.6.6
 
+      - name: Debug OIDC token
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+
       - name: Terraform Init
         run: |
           terraform init \
