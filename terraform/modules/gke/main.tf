@@ -32,6 +32,10 @@ resource "google_container_cluster" "this" {
     disk_size_gb = 12               # Minimal boot disk size
     service_account = google_service_account.gke_nodes.email
   }
+  
+  timeouts {
+    create = "15m"
+  }
 
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
