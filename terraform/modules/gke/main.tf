@@ -1,3 +1,7 @@
+resource "google_service_account" "gke_nodes" {
+  account_id   = "gke-nodes"
+  display_name = "GKE Nodes"
+}
 resource "google_container_cluster" "this" {
   name     = var.cluster_name
   location = var.region
@@ -15,6 +19,7 @@ resource "google_container_cluster" "this" {
   node_config {
     machine_type = "e2-medium"      # Minimal stable machine type
     disk_size_gb = 12               # Minimal boot disk size
+    service_account = google_service_account.gke_nodes.email
   }
 
   workload_identity_config {
@@ -55,6 +60,7 @@ resource "google_container_node_pool" "primary" {
     # Standard on-demand nodes (no spot/preemptible) to avoid instability
     machine_type = "e2-medium"      # Minimal stable machine type
     disk_size_gb = 12               # Minimal boot disk size
+    service_account = google_service_account.gke_nodes.email
     
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
