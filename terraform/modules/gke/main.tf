@@ -1,13 +1,16 @@
+data "google_service_account" "github_terraform" {
+  account_id = "github-terraform@${var.project_id}.iam.gserviceaccount.com"
+}
+
 resource "google_service_account" "gke_nodes" {
   account_id   = "gke-nodes"
   display_name = "GKE Nodes"
 }
 
-resource "google_service_account_iam_member" "terraform_can_impersonate_gke_nodes" {
-  service_account_id = "projects/${var.project_id}/serviceAccounts/gke-nodes@${var.project_id}.iam.gserviceaccount.com"
-
+resource "google_service_account_iam_member" "impersonate_gke_nodes" {
+  service_account_id = google_service_account.gke_nodes.name
   role   = "roles/iam.serviceAccountUser"
-  member = "serviceAccount:github-terraform@${var.project_id}.iam.gserviceaccount.com"
+  member = "serviceAccount:${data.google_service_account.github_terraform.email}"
 }
 
 resource "google_container_cluster" "this" {
