@@ -15,7 +15,7 @@ resource "google_container_cluster" "this" {
   node_config {
     machine_type = "e2-medium"      # Minimal stable machine type
     disk_size_gb = 12               # Minimal boot disk size
-    service_account = google_service_account.gke_nodes.email
+    service_account = var.service_account
   }
   
   timeouts {

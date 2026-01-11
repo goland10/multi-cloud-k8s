@@ -29,3 +29,7 @@ variable "pods_range_name" {
 variable "services_range_name" {
   type = string
 }
+
+variable "service_account" {
+  type = string
+}
