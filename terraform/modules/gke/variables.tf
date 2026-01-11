@@ -22,9 +22,9 @@ variable "subnetwork" {
   type = string
 }
 
-#variable "pods_range_name" {
-#  type = string
-#}
+variable "pods_range_name" {
+  type = string
+}
 
 variable "services_range_name" {
   type = string

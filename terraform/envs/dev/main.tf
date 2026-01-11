@@ -28,5 +28,5 @@ module "gke" {
   pods_range_name     = "pods"
   services_range_name = "services"
 
-  service_account = module.iam.node_SA_email
+  service_account = module.iam.nodes_SA-email
 }
