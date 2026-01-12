@@ -59,10 +59,10 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="prefix=terraform/envs/${ENVIRONMENT}"
+            -backend-config="prefix=envs/${ENVIRONMENT}/${{ inputs.cluster_name }}"
 
-      - name: Force unlock Terraform state (emergency)
-        run: terraform force-unlock -force 1768193517967298            
+      #- name: Force unlock Terraform state (emergency)
+      #  run: terraform force-unlock -force 1768193517967298            
 
       - name: Terraform Destroy
         if: github.event.inputs.confirm == 'DESTROY'

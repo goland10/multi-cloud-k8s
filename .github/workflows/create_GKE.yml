@@ -80,7 +80,7 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="prefix=terraform/envs/${ENVIRONMENT}/${{ inputs.cluster_name }}"
+            -backend-config="prefix=envs/${ENVIRONMENT}/${{ inputs.cluster_name }}"
 
       - name: Terraform Validate
         run: terraform validate

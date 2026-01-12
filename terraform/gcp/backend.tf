@@ -1,5 +1,5 @@
 terraform {
   backend "gcs" {
-    bucket = "gke-github_actions-state"
+    bucket = "github_actions-gke-terraform-state"
   }
 }
