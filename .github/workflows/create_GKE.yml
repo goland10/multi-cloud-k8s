@@ -82,6 +82,9 @@ jobs:
           terraform init \
             -backend-config="prefix=terraform/envs/${ENVIRONMENT}/${{ inputs.cluster_name }}"
 
+      - name: Force unlock Terraform state (emergency)
+        run: terraform force-unlock -force 1768193517967298
+
       - name: Terraform Validate
         run: terraform validate
 
