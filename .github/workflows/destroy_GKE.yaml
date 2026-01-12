@@ -10,7 +10,11 @@ on:
         options:
           - dev
           - staging
-          - prod      
+          - prod  
+      cluster_name:
+        description: "GKE cluster name to destroy"
+        required: true
+        type: string
       confirm:
         description: "Type DESTROY to confirm infrastructure deletion"
         required: true
@@ -50,7 +54,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.6.6
+          terraform_version: 1.14
 
       - name: Terraform Init
         run: |
@@ -59,4 +63,9 @@ jobs:
 
       - name: Terraform Destroy
         if: github.event.inputs.confirm == 'DESTROY'
-        run: terraform destroy -auto-approve
+        run: |
+          terraform destroy \
+            -var="cluster_name=${{ inputs.cluster_name }}" \
+            -var-file="./envs/${{ inputs.environment }}.tfvars" \
+            -auto-approve
+            
