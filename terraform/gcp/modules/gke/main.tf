@@ -20,8 +20,9 @@ resource "google_container_cluster" "this" {
 
   # Required only to satisfy API when removing default node pool
   node_config {
-    machine_type    = var.machine_type
-    disk_size_gb    = var.disk_size_gb
+    machine_type = "e2-medium"
+    disk_size_gb    = 12
+    
     service_account = var.service_account
   }
 
@@ -74,7 +75,7 @@ resource "google_container_node_pool" "primary" {
   node_config {
     # Standard on-demand nodes (no spot/preemptible) to avoid instability
     machine_type    = var.machine_type
-    disk_size_gb    = 12
+    disk_size_gb    = var.disk_size_gb
     service_account = var.service_account
 
     oauth_scopes = [
