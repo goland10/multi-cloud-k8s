@@ -38,7 +38,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform/envs/${{ github.event.inputs.environment }}
+        working-directory: terraform/gcp
 
     steps:
       - name: Validate GKE cluster name
