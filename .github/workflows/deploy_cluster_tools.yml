@@ -1,4 +1,4 @@
-name: Terraform GKE Deploy
+name: Deploy Cluster Tools
 
 on:
   #push:

@@ -1,4 +1,4 @@
-name: Terraform GKE Deploy
+name: Create skeleton
 
 on:
   #push:
@@ -33,7 +33,7 @@ env:
 
 jobs:
   terraform:
-    name: Create prerequisites
+    name: Create skeleton
     runs-on: ubuntu-latest
 
     defaults:
