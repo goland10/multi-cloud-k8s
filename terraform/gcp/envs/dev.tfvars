@@ -9,11 +9,6 @@ node_count = 1
 deletion_protection = false
 release_channel     = "RAPID"
 
-logging_components = [
-  "SYSTEM_COMPONENTS",
-  "WORKLOADS"
-]
+logging_components = ["SYSTEM_COMPONENTS"]
 
-monitoring_components = [
-  "SYSTEM_COMPONENTS"
-]
+monitoring_components = []

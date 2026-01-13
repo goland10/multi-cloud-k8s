@@ -80,7 +80,7 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="prefix=envs/${ENVIRONMENT}/${{ inputs.cluster_name }}"
+            -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
 
       - name: Terraform Validate
         run: terraform validate
@@ -105,3 +105,18 @@ jobs:
             -var-file="./envs/${{ inputs.environment }}.tfvars" \
             -auto-approve \
             tfplan
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials \
+            ${{ inputs.cluster_name }} \
+            --region ${{ env.TF_VAR_region }} \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Verify cluster access
+        run: |
+          kubectl version --client
+          kubectl get nodes            

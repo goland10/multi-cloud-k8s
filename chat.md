@@ -830,3 +830,6 @@ This is where your repo **starts looking like a real team project**.
 2️⃣ Confirm you’re ready to add **GitHub Actions**
 
 I’ll generate the **exact CI pipeline YAML** next.
+  node_locations = local.node_locations_by_env[var.environment]
+  #node_locations = var.environment == "dev" ? null : local.node_locations_by_env[var.environment]
+  location       = var.environment == "dev" ? local.node_locations_by_env[var.environment] : var.region

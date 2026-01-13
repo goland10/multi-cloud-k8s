@@ -2,19 +2,14 @@
 # Core / identity
 #######################################
 
-variable "project_id" {
-  type = string
-}
-
 variable "environment" {
   type        = string
   description = "Deployment environment label (dev, staging, prod)"
 }
-
-variable "region" {
-  type        = string
-  description = "GCP region where the GKE cluster is deployed"
-}
+#variable "region" {
+#  type        = string
+#  description = "GCP region where the GKE cluster is deployed"
+#}
 
 variable "cluster_name" {
   type        = string
@@ -81,6 +76,10 @@ variable "node_max" {
 variable "node_count" {
   type        = number
   description = "Initial node count for the primary node pool"
+}
+
+variable "location" {
+  type = string
 }
 
 variable "node_locations" {

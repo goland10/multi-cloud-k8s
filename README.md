@@ -8,6 +8,13 @@ This project demonstrates a production-style Kubernetes platform on GCP, built u
 2. `github-terraform` service accounts exists and owns the roles:
     1. Infrastructure Administrator
     2. Service Account Admin
+    3. Kubernetes Engine Admin
+    ```bash
+    gcloud projects add-iam-policy-binding chatgpt1-goland1 \
+    --member="serviceAccount:github-terraform@chatgpt1-goland1.iam.gserviceaccount.com" \
+    --role="roles/container.admin"
+
+    ```
 3. Workload Identity Pool `GitHub Actions Pool` exists and `GitHub Provider` is defined. 
 
 ```bash

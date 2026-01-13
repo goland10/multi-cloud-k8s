@@ -24,7 +24,7 @@ variable "region" {
 
 variable "cluster_name" {
   type        = string
-  description = "Base cluster name provided by GitHub Actions (without region)"
+  description = "GKE cluster name provided by GitHub Actions"
 
   validation {
     condition     = length(var.cluster_name) > 2

@@ -1,10 +1,13 @@
+data "google_client_config" "current" {}
+
 #######################################
 # GKE Cluster
 #######################################
 
 resource "google_container_cluster" "this" {
   name     = var.cluster_name
-  location = var.region
+  #location = var.region
+  location = var.location
 
   network    = var.network
   subnetwork = var.subnetwork
@@ -20,15 +23,15 @@ resource "google_container_cluster" "this" {
 
   # Required only to satisfy API when removing default node pool
   node_config {
-    machine_type = "e2-medium"
-    disk_size_gb    = 12
+    machine_type = "e2-medium"        #Minimal value
+    disk_size_gb    = 12              #Minimal value
     
     service_account = var.service_account
   }
 
   workload_identity_config {
     # Project-scoped Workload Identity (best practice)
-    workload_pool = "${var.project_id}.svc.id.goog"
+    workload_pool = "${data.google_client_config.current.project}.svc.id.goog"
   }
 
   ip_allocation_policy {
@@ -48,11 +51,11 @@ resource "google_container_cluster" "this" {
     enable_components = var.monitoring_components
   }
 
-  timeouts {
-    create = "15m"
-    update = "15m"
-    delete = "15m"
-  }
+ # timeouts {
+ #   create = "15m"
+ #   update = "15m"
+ #   delete = "15m"
+ # }
 }
 
 #######################################
@@ -62,7 +65,8 @@ resource "google_container_cluster" "this" {
 resource "google_container_node_pool" "primary" {
   name     = "primary-pool"
   cluster = google_container_cluster.this.name
-  location = var.region
+  #location = var.region
+  location = var.location
 
   node_locations = var.node_locations
   node_count     = var.node_count
@@ -99,9 +103,9 @@ resource "google_container_node_pool" "primary" {
     auto_upgrade = true
   }
 
-  timeouts {
-    create = "20m"
-    update = "20m"
-    delete = "20m"
-  }
+  #timeouts {
+  #  create = "20m"
+  #  update = "20m"
+  #  delete = "20m"
+  #}
 }
