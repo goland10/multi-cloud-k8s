@@ -29,10 +29,6 @@ locals {
   impersonate_sa = "github-terraform"
 }
 
-module "network" {
-  source = "./modules/network"
-  region = var.region
-}
 
 #locals {
 #  all_zones = data.google_compute_zones.this.names
