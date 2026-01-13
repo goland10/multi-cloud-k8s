@@ -92,10 +92,10 @@ jobs:
             -var-file="./envs/${{ inputs.environment }}.tfvars" \
             -out=tfplan
 
-      - name: Stop workflow
-        run: |
-          echo "Intentional stop"
-          exit 1
+      #- name: Stop workflow
+      #  run: |
+      #    echo "Intentional stop"
+      #    exit 1
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
