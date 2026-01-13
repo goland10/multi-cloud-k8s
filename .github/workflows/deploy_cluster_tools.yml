@@ -1,0 +1,122 @@
+name: Terraform GKE Deploy
+
+on:
+  #push:
+  #  branches:
+  #    - main
+  #pull_request:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      cluster_name:
+        description: "GKE cluster name (only lowercase letters, numbers, and hyphens. Must start with a lowercase letter)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write   # REQUIRED for Workload Identity Federation
+
+env:
+  PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
+  PROJECT_ID: ${{ vars.PROJECT_ID}}
+  TF_VAR_project_id: ${{ vars.PROJECT_ID}}
+  TF_VAR_region: ${{ vars.REGION }}
+  ENVIRONMENT: ${{ github.event.inputs.environment }}
+
+jobs:
+  terraform:
+    name: deploy_cluster_tools
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform/gcp
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate GKE cluster name
+        run: |
+          NAME="${{ inputs.cluster_name }}"
+
+          if [[ ! "$NAME" =~ ^[a-z]([-a-z0-9]{0,38}[a-z0-9])?$ ]]; then
+            echo "❌ Invalid GKE cluster name"
+            echo "Rules:"
+            echo " - 1–40 characters"
+            echo " - lowercase letters, numbers, hyphens"
+            echo " - must start with a letter"
+            echo " - must not end with a hyphen"
+            exit 1
+          fi
+
+          echo "✅ GKE cluster name is valid: $NAME"
+
+      - name: Authenticate to Google Cloud (WIF)
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: projects/${{env.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: github-terraform@chatgpt1-goland1.iam.gserviceaccount.com
+      
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14
+      
+      - name: Debug OIDC token
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+      
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
+#
+      #- name: Terraform Validate
+      #  run: terraform validate
+#
+      #- name: Terraform Plan
+      #  run: |
+      #    terraform plan \
+      #      -var="cluster_name=${{ inputs.cluster_name }}" \
+      #      -var-file="./envs/${{ inputs.environment }}.tfvars" \
+      #      -out=tfplan
+
+      #- name: Stop workflow
+      #  run: |
+      #    echo "Intentional stop"
+      #    exit 1
+
+      #- name: Terraform Apply
+      #  if: github.ref == 'refs/heads/main'
+      #  run: |
+      #    terraform apply \
+      #      -var="cluster_name=${{ inputs.cluster_name }}" \
+      #      -var-file="./envs/${{ inputs.environment }}.tfvars" \
+      #      -auto-approve \
+      #      tfplan
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials \
+            ${{ inputs.cluster_name }} \
+            --location $(terraform output -raw location) \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Verify cluster access
+        run: |
+          kubectl version --client
+          kubectl get nodes            
