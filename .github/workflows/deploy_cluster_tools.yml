@@ -116,6 +116,8 @@ jobs:
             --location $(terraform output -raw location) \
             --project ${{ env.PROJECT_ID }}
       
+      - run: gcloud components list
+
       - name: Check gke-gcloud-auth-plugin
         run: gke-gcloud-auth-plugin --version
 
