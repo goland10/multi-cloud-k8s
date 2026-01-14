@@ -81,30 +81,6 @@ jobs:
         run: |
           terraform init \
             -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
-#
-      #- name: Terraform Validate
-      #  run: terraform validate
-#
-      #- name: Terraform Plan
-      #  run: |
-      #    terraform plan \
-      #      -var="cluster_name=${{ inputs.cluster_name }}" \
-      #      -var-file="./envs/${{ inputs.environment }}.tfvars" \
-      #      -out=tfplan
-
-      #- name: Stop workflow
-      #  run: |
-      #    echo "Intentional stop"
-      #    exit 1
-
-      #- name: Terraform Apply
-      #  if: github.ref == 'refs/heads/main'
-      #  run: |
-      #    terraform apply \
-      #      -var="cluster_name=${{ inputs.cluster_name }}" \
-      #      -var-file="./envs/${{ inputs.environment }}.tfvars" \
-      #      -auto-approve \
-      #      tfplan
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
@@ -118,13 +94,9 @@ jobs:
             --location $(terraform output -raw location) \
             --project ${{ env.PROJECT_ID }}
       
-      - run: gcloud components list
-
-      - name: Check gke-gcloud-auth-plugin
-        run: gke-gcloud-auth-plugin --version
-
+      #- run: gcloud components list
 
       - name: Verify cluster access
         run: |
-          kubectl version --client
+          kubectl version 
           kubectl get nodes            
