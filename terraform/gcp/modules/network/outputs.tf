@@ -1,17 +1,36 @@
-output "vpc_id" {
-  value = google_compute_network.vpc.id
+output "network_name" {
+  description = "Name of the VPC network"
+  value       = google_compute_network.vpc.name
 }
 
-output "subnet_id" {
-  value = google_compute_subnetwork.subnet.id
+output "network_self_link" {
+  description = "Self link of the VPC network"
+  value       = google_compute_network.vpc.self_link
 }
 
-output "pods_range_name" {
-  description = "Secondary IP range name for GKE pods"
-  value       = google_compute_subnetwork.subnet.secondary_ip_range[0].range_name
+output "subnet_names" {
+  description = "Subnet names keyed by environment"
+  value = {
+    for k, subnet in google_compute_subnetwork.subnets :
+    k => subnet.name
+  }
 }
 
-output "services_range_name" {
-  description = "Secondary IP range name for GKE services"
-  value       = google_compute_subnetwork.subnet.secondary_ip_range[1].range_name
+output "subnet_self_links" {
+  description = "Subnet self links keyed by environment"
+  value = {
+    for k, subnet in google_compute_subnetwork.subnets :
+    k => subnet.self_link
+  }
+}
+
+output "secondary_ip_ranges" {
+  description = "Secondary IP range names for each subnet"
+  value = {
+    for k, subnet in google_compute_subnetwork.subnets :
+    k => {
+      pods     = "pods"
+      services = "services"
+    }
+  }
 }

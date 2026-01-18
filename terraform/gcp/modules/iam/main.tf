@@ -1,14 +1,22 @@
-data "google_service_account" "github_terraform" {
-  account_id = var.account_id
+resource "google_service_account" "nodes" {
+  account_id   = var.nodes_sa_id
+  display_name = "GKE node service account"
 }
 
-resource "google_service_account" "nodes_SA" {
-  account_id   = "gke-nodes"
-  display_name = "GKE Nodes"
+resource "google_project_iam_member" "logging" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.nodes.email}"
 }
 
-resource "google_service_account_iam_member" "impersonate_gke_nodes" {
-  service_account_id = google_service_account.nodes_SA.name
-  role   = "roles/iam.serviceAccountUser"
-  member = "serviceAccount:${data.google_service_account.github_terraform.email}"
+resource "google_project_iam_member" "monitoring" {
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+  member  = "serviceAccount:${google_service_account.nodes.email}"
+}
+
+resource "google_project_iam_member" "artifact_registry" {
+  project = var.project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${google_service_account.nodes.email}"
 }

@@ -1,3 +1,4 @@
-output "nodes_SA-email" {
-  value = google_service_account.nodes_SA.email
+output "nodes_sa_email" {
+  description = "Email of the GKE node service account"
+  value       = google_service_account.nodes.email
 }

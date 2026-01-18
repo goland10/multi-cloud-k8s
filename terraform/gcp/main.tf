@@ -1,38 +1,62 @@
+#######################################
+# Network
+#######################################
+
 module "network" {
   source = "./modules/network"
-  region = var.region
+
+  project_id   = var.project_id
+  region       = var.region
+  network_name = var.network_name
+  subnets      = var.subnets
 }
+
+#######################################
+# IAM
+#######################################
 
 module "iam" {
-  source     = "./modules/iam"
-  account_id = "${local.impersonate_sa}@${var.project_id}.iam.gserviceaccount.com"
+  source      = "./modules/iam"
+  project_id  = var.project_id
+  nodes_sa_id = var.nodes_sa_id
 }
 
+#######################################
+# GKE Clusters
+#######################################
+
 module "gke" {
-  source = "./modules/gke"
+  source   = "./modules/gke"
+  for_each = var.clusters
 
-  environment = var.environment
-  #region         = var.region
-  location       = local.location
-  node_locations = local.node_locations
+  # Naming
+  cluster_name = "${each.key}"
+  environment  = each.value.environment
 
-  cluster_name = var.cluster_name
+  # Location
+  location       = each.value.region_or_zone
+  node_locations = lookup(each.value, "node_locations", null)
 
-  network             = module.network.vpc_id
-  subnetwork          = module.network.subnet_id
-  pods_range_name     = module.network.pods_range_name     #"pods"
-  services_range_name = module.network.services_range_name #"services"
+  # Networking
+  network_name    = module.network.network_name
+  subnetwork_name = module.network.subnet_names[each.key]
 
-  machine_type = var.machine_type
-  disk_size_gb = var.disk_size_gb
-  node_min     = var.node_min
-  node_max     = var.node_max
-  node_count   = var.node_count
+  # Node pool sizing
+  machine_type = each.value.machine_type
+  disk_size_gb = each.value.disk_size_gb
 
-  deletion_protection = var.deletion_protection
-  service_account     = module.iam.nodes_SA-email
+  node_min   = each.value.node_min
+  node_max   = each.value.node_max
+  node_count = each.value.node_count
 
-  release_channel       = var.release_channel
-  logging_components    = var.logging_components
-  monitoring_components = var.monitoring_components
+  # Cluster behavior
+  deletion_protection = each.value.deletion_protection
+  release_channel     = each.value.release_channel
+
+  logging_components     = each.value.logging_components
+  monitoring_components = each.value.monitoring_components
+
+  # Identity
+  service_account = module.iam.nodes_sa_email
+
 }
