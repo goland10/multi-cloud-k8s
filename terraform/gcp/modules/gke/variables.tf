@@ -22,7 +22,7 @@ variable "env_type" {
 #######################################
 
 variable "location" {
-  description = "GKE cluster location (region or zone)"
+  description = "Control plain location (region = master on each zone. zone = single zone master)"
   type        = string
 }
 
@@ -145,8 +145,36 @@ variable "monitoring_components" {
 # Labels / tags
 #######################################
 
-variable "labels_or_tags" {
-  description = "Labels and tags applied to GKE resources"
+#variable "labels" {
+#  description = "Labels and tags applied to GKE resources"
+#  type        = map(string)
+#  default     = {}
+#}
+
+#######################################
+# Labels / cost allocation
+#######################################
+
+variable "labels" {
+  description = "Common GCP labels applied to GKE cluster and node resources"
   type        = map(string)
-  default     = {}
+
+  validation {
+    condition = alltrue([
+      for k, v in var.labels :
+      (
+        # key validation
+        can(regex("^[a-z][a-z0-9_]{0,62}$", k))
+        &&
+        # value validation (can be empty, but if not empty must match)
+        (v == "" || can(regex("^[a-z0-9_-]{0,63}$", v)))
+      )
+    ])
+    error_message = <<EOT
+    labels must follow GCP label rules:
+    - keys: lowercase letters, numbers, underscores; must start with a letter; max 63 chars
+    - values: lowercase letters, numbers, underscores, hyphens; max 63 chars
+    - uppercase letters are NOT allowed
+    EOT
+  }
 }

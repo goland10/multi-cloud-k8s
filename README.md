@@ -3,52 +3,92 @@
 This project demonstrates a production-style Kubernetes platform on GCP, built using Github Actions, Terraform and SRE best practices.
 
 ## Prerequisits:
-
-1. GCP project exists.
-2. `github-terraform` service accounts exists and owns the roles:
-    1. Infrastructure Administrator
-    2. Service Account Admin
-    3. Kubernetes Engine Admin
+#  GCP 
+1.  GCP project exists.
     ```bash
-    gcloud projects add-iam-policy-binding chatgpt1-goland1 \
-    --member="serviceAccount:github-terraform@chatgpt1-goland1.iam.gserviceaccount.com" \
+    PROJECT_ID=github-actions-terraform-k8s
+    gcloud projects create $PROJECT_ID \              
+    --name="GitHub Actions Terraform K8s"
+    ```
+2.  Link the project to a billing account.
+    ```bash
+    gcloud beta billing accounts list
+    BILLING_ACCOUNT_ID=XXXXXXXXXXX
+    gcloud beta billing projects link $PROJECT_ID \
+    --billing-account=$BILLING_ACCOUNT_ID
+    ```
+3.  gcloud config set project $PROJECT_ID
+4.  Required services are enabled.
+    ```bash
+    gcloud services enable \
+    compute.googleapis.com \
+    container.googleapis.com \
+    iam.googleapis.com \
+    iamcredentials.googleapis.com \
+    cloudresourcemanager.googleapis.com \
+    sts.googleapis.com \
+    --project=$PROJECT_ID
+    ```
+5.  WIF service account exists and owns the roles:
+    1. Infrastructure Administrator
+    2. Kubernetes Engine Admin
+    3. Service Account Admin
+    ```bash
+    WIF_SA_NAME=github-terraform-k8s
+    WIF_SA_EMAIL=${WIF_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com
+
+    gcloud iam service-accounts create ${WIF_SA_NAME} \
+    --project=${PROJECT_ID} \
+    --display-name="service account for GitHub Actions Terraform GKE"
+
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:${WIF_SA_EMAIL}  \
+    --role=roles/iam.infrastructureAdmin
+
+    gcloud projects add-iam-policy-binding $PROJECT_ID  \
+    --member=serviceAccount:${WIF_SA_EMAIL}  \
     --role="roles/container.admin"
 
+    gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:${WIF_SA_EMAIL}  \
+    --role=roles/iam.serviceAccountAdmin    
     ```
-3. Workload Identity Pool `GitHub Actions Pool` exists and `GitHub Provider` is defined. 
+6.  Workload Identity Pool `GitHub Actions Pool` exists and OIDC `GitHub Provider` is defined. 
 
-```bash
-gcloud iam workload-identity-pools create github-pool \
-  --project=chatgpt1-goland1 \
-  --location=global \
-  --display-name="GitHub Actions Pool"
+    ```bash
+    POOL_ID=github-pool
+    PROVIDER_ID=github-provider
+    REPO_PATH='goland10/GKE-Github_Actions'
 
-gcloud iam workload-identity-pools providers create-oidc github-provider   --project=chatgpt1-goland1   --location=global   \
---workload-identity-pool=github-pool   --display-name="GitHub Provider"  \
---issuer-uri="https://token.actions.githubusercontent.com/"   \
---attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
---attribute-condition="assertion.repository.startsWith('goland10/')"
-```
+    gcloud iam workload-identity-pools create $POOL_ID \
+      --location=global \
+      --display-name="GitHub Actions Pool"
 
-4. Federated user has access to SA `github-terraform` with the roles:
+    gcloud iam workload-identity-pools providers create-oidc $PROVIDER_ID   \
+    --location=global   \
+    --workload-identity-pool=$POOL_ID   \
+    --display-name="GitHub Provider"  \
+    --issuer-uri="https://token.actions.githubusercontent.com/"   \
+    --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
+    --attribute-condition="assertion.repository == ${REPO_PATH}" #.startsWith('goland10/')"
+    ```
+
+7.  Allow the federated (external) identity to impersonate the service account.
+    Federated user has access to SA `github-terraform` with the roles:
     1. Workload Identity User
-    2. Service Account Token Creator
-```bash
-PROJECT_NUMBER=GCP_project_number
-
-Allow the external identity (Federated user) to impersonate the SA:
-gcloud iam service-accounts add-iam-policy-binding github-terraform@chatgpt1-goland1.iam.gserviceaccount.com \
---role=roles/iam.workloadIdentityUser \
---member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/goland10/
-GKE-Github_Actions"
-
-Allow the external identity to create token (to use Cloud Storage for example)
-gcloud iam service-accounts add-iam-policy-binding  github-terraform@chatgpt1-goland1.iam.gserviceaccount.com \
---role=roles/iam.serviceAccountTokenCreator \
---member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/goland10/
-GKE-Github_Actions"
-
-```
+    2. Service Account Token Creator (for bucket usage)
+    ```bash
+    PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+    
+    Allow the external identity (Federated user) to impersonate the SA:
+    gcloud iam service-accounts add-iam-policy-binding $WIF_SA_EMAIL \
+    --role=roles/iam.workloadIdentityUser \
+    --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL_ID/attribute.repository/${REPO_PATH}"
+    
+    Allow the external identity to create token (to use Cloud Storage for example)
+    gcloud iam service-accounts add-iam-policy-binding  $WIF_SA_EMAIL \
+    --role=roles/iam.serviceAccountTokenCreator \
+    --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL_ID/attribute.repository/${REPO_PATH}"
+    ```
 
 ## Phase 1 - Create 2 Github Actions workflows
 1. GKE cluster creation using Terrarorm

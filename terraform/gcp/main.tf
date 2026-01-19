@@ -68,5 +68,5 @@ module "gke" {
   monitoring_components = var.monitoring_components
 
   # Labels / tags
-  labels_or_tags = var.labels_or_tags
+  labels = var.gcp_labels_aws_tags
 }

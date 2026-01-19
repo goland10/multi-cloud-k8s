@@ -30,7 +30,7 @@ resource "google_container_cluster" "this" {
       "https://www.googleapis.com/auth/cloud-platform"
     ]
 
-    resource_labels = var.labels_or_tags
+    resource_labels = var.labels
   }
 
   # Identity
@@ -56,7 +56,7 @@ resource "google_container_cluster" "this" {
     enable_components = var.monitoring_components
   }
 
-  resource_labels = var.labels_or_tags
+  resource_labels = var.labels
 }
 
 #######################################
@@ -89,7 +89,7 @@ resource "google_container_node_pool" "primary" {
       "https://www.googleapis.com/auth/cloud-platform"
     ]
 
-    resource_labels = var.labels_or_tags
+    resource_labels = var.labels
 
     shielded_instance_config {
       enable_secure_boot          = true

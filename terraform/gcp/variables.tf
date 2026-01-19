@@ -24,14 +24,19 @@ variable "env_type" {
 #######################################
 # Labels / cost allocation
 #######################################
+#variable "labels_or_tags" {
+#  description = "Labels and tags applied to GKE" 
+#  type        = map(string)
+#  default     = {}
+#}
 
-variable "labels_or_tags" {
-  description = "Common GCP labels applied to GKE cluster and node resources"
+variable "gcp_labels_aws_tags" {
+  description = "Common GCP labels/AWS tags applied to GKE/EKS cluster and node resources"
   type        = map(string)
 
   validation {
     condition = alltrue([
-      for k, v in var.labels_or_tags :
+      for k, v in var.gcp_labels_aws_tags :
       (
         # key validation
         can(regex("^[a-z][a-z0-9_]{0,62}$", k))
