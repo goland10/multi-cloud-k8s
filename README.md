@@ -1,6 +1,7 @@
 # GKE-Github_Actions
 
-This project demonstrates a production-style Kubernetes platform on GCP, built using Github Actions, Terraform and SRE best practices.
+This project demonstrates a production-style deployment of Kubernetes on AWS/GCP, built using Github Actions, Terraform and SRE best practices.
+The automation is intended to be used by dev/staging/prod teams to deploy k8s clusters with a single click.
 
 ## Prerequisits:
 #  GCP 
@@ -52,24 +53,26 @@ This project demonstrates a production-style Kubernetes platform on GCP, built u
     --member=serviceAccount:${WIF_SA_EMAIL}  \
     --role=roles/iam.serviceAccountAdmin    
     ```
-6.  Workload Identity Pool `GitHub Actions Pool` exists and OIDC `GitHub Provider` is defined. 
+6.  Create Workload Identity Pool `GitHub Actions Pool` OIDC provider `GitHub Provider`. 
 
     ```bash
     POOL_ID=github-pool
     PROVIDER_ID=github-provider
-    REPO_PATH='goland10/GKE-Github_Actions'
+    REPO_PATH=goland10/multi-cloud-k8s
 
     gcloud iam workload-identity-pools create $POOL_ID \
+      --project=$PROJECT_ID \
       --location=global \
       --display-name="GitHub Actions Pool"
 
     gcloud iam workload-identity-pools providers create-oidc $PROVIDER_ID   \
+    --project=$PROJECT_ID \
     --location=global   \
     --workload-identity-pool=$POOL_ID   \
     --display-name="GitHub Provider"  \
     --issuer-uri="https://token.actions.githubusercontent.com/"   \
     --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
-    --attribute-condition="assertion.repository == ${REPO_PATH}" #.startsWith('goland10/')"
+    --attribute-condition="assertion.repository == '${REPO_PATH}'" 
     ```
 
 7.  Allow the federated (external) identity to impersonate the service account.
