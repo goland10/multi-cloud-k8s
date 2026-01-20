@@ -3,7 +3,7 @@ resource "google_service_account" "nodes" {
   display_name = "GKE nodes service account (${var.env_name})"
 }
 
-# Attach node roles to the node SA
+# Grant roles to the node SA
 resource "google_project_iam_member" "nodes_roles" {
   for_each = toset(var.node_identity_roles)
 
@@ -12,9 +12,15 @@ resource "google_project_iam_member" "nodes_roles" {
   member  = "serviceAccount:${google_service_account.nodes.email}"
 }
 
-## Allow runner SA to act as the node SA
-#resource "google_service_account_iam_member" "runner_act_as_nodes" {
-#  service_account_id = google_service_account.nodes.name
-#  role               = "roles/iam.serviceAccountUser"
-#  member             = "serviceAccount:${var.runner_service_account_email}"
-#}
+data "google_service_account" "runner" {
+  account_id = var.runner_service_account
+  project    = var.project_id
+}
+
+
+# Allow the runner SA to attach the node SA to the nodes
+resource "google_service_account_iam_member" "runner_can_use_node_sa" {
+  service_account_id = google_service_account.nodes.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${data.google_service_account.runner.email}"
+}

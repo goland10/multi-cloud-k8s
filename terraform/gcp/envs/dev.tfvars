@@ -4,6 +4,8 @@
 env_name = "dev-01"
 env_type = "dev"
 project_id = "github-actions-terraform-k8s"
+runner_service_account = "github-terraform-k8s"
+
 region     = "europe-west1"
 
 # -------------------------------------------------------------------
@@ -54,7 +56,7 @@ node_count = 1
 # -------------------------------------------------------------------
 # GKE cluster behavior
 # -------------------------------------------------------------------
-deletion_protection = true
+deletion_protection = false
 release_channel     = "RAPID"
 
 logging_components     = ["SYSTEM_COMPONENTS"]

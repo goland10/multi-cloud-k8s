@@ -26,10 +26,11 @@ To run this automation on GCP successfully, make sure you have completed all the
     sts.googleapis.com \
     --project=$PROJECT_ID
     ```
-5.  Create a WIF service account and grant it with the roles:
+5.  Create a WIF service account (runner) and grant it with the roles:
     1. Infrastructure Administrator
     2. Kubernetes Engine Admin
     3. Service Account Admin
+    4. resourcemanager.projectIamAdmin: The runner SA is allowed to attach roles to other SA (node SA)
     ```bash
     WIF_SA_NAME=github-terraform-k8s
     WIF_SA_EMAIL=${WIF_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com
@@ -93,7 +94,7 @@ To run this automation on GCP successfully, make sure you have completed all the
     --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL_ID/attribute.repository/${REPO_PATH}"
     ```
 8.  Create bucket to store the state files.
-    ```
+    ```bash
     BUCKET_NAME=github-k8s-terraform-state
     gcloud storage buckets create gs://BUCKET_NAME \
     --location=europe-west1 \

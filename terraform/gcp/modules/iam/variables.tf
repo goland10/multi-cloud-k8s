@@ -23,8 +23,8 @@ variable "node_identity_roles" {
   }
 }
 
-#variable "runner_service_account_email" {
-#  description = "Service account used by GitHub Actions runner"
-#  type        = string
-#}
+variable "runner_service_account" {
+  description = "Service account used by GitHub Actions runner"
+  type        = string
+}
 
