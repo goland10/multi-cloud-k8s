@@ -1,3 +1,12 @@
+locals {
+  gcp_labels_aws_tags = {
+    env_type = var.env_type
+    env_name = var.env_name
+    owner    = var.owner
+    project  = "k8s-terraform"
+  }
+}
+
 ##data "google_compute_zones" "this" {
 ##  region = var.region
 ##  status = "UP"

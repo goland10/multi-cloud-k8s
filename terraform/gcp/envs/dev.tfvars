@@ -1,20 +1,15 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
-env_name = "dev-01"
-env_type = "dev"
-project_id = "github-actions-terraform-k8s"
+#env_name = "dev-01"
+#env_type = "dev"
+#project_id = "github-actions-terraform-k8s"
 region     = "europe-west1"
 
 # -------------------------------------------------------------------
 # Labels / cost allocation
 # -------------------------------------------------------------------
-gcp_labels_aws_tags = {
-  env_type    = "dev"   
-  env_name    = "dev-01"
-  owner       = "yaniv"
-  project     = "k8s-terraform"
-}
+owner = "yaniv"
 
 # -------------------------------------------------------------------
 # Network

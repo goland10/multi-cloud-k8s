@@ -88,4 +88,12 @@ To run this automation on GCP successfully, make sure you have completed all the
     --role=roles/iam.serviceAccountTokenCreator \
     --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL_ID/attribute.repository/${REPO_PATH}"
     ```
+8.  Create bucket to store the state files.
+    ```
+    BUCKET_NAME=github-k8s-terraform-state
+    gcloud storage buckets create gs://BUCKET_NAME \
+    --location=europe-west1 \
+    --default-storage-class=STANDARD \
+    --uniform-bucket-level-access \
+    ```
 # AWS

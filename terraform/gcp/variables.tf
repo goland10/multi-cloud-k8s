@@ -30,29 +30,34 @@ variable "env_type" {
 #  default     = {}
 #}
 
-variable "gcp_labels_aws_tags" {
-  description = "Common GCP labels/AWS tags applied to GKE/EKS cluster and node resources"
-  type        = map(string)
-
-  validation {
-    condition = alltrue([
-      for k, v in var.gcp_labels_aws_tags :
-      (
-        # key validation
-        can(regex("^[a-z][a-z0-9_]{0,62}$", k))
-        &&
-        # value validation (can be empty, but if not empty must match)
-        (v == "" || can(regex("^[a-z0-9_-]{0,63}$", v)))
-      )
-    ])
-    error_message = <<EOT
-    labels_or_tags must follow GCP label rules:
-    - keys: lowercase letters, numbers, underscores; must start with a letter; max 63 chars
-    - values: lowercase letters, numbers, underscores, hyphens; max 63 chars
-    - uppercase letters are NOT allowed
-    EOT
-  }
+variable "owner" {
+  type        = string
+  description = "Owner for this environment"
 }
+
+#variable "gcp_labels_aws_tags" {
+#  description = "Common GCP labels/AWS tags applied to GKE/EKS cluster and node resources"
+#  type        = map(string)
+#
+#  validation {
+#    condition = alltrue([
+#      for k, v in var.gcp_labels_aws_tags :
+#      (
+#        # key validation
+#        can(regex("^[a-z][a-z0-9_]{0,62}$", k))
+#        &&
+#        # value validation (can be empty, but if not empty must match)
+#        (v == "" || can(regex("^[a-z0-9_-]{0,63}$", v)))
+#      )
+#    ])
+#    error_message = <<EOT
+#    labels_or_tags must follow GCP label rules:
+#    - keys: lowercase letters, numbers, underscores; must start with a letter; max 63 chars
+#    - values: lowercase letters, numbers, underscores, hyphens; max 63 chars
+#    - uppercase letters are NOT allowed
+#    EOT
+#  }
+#}
 
 #######################################
 # Provider context

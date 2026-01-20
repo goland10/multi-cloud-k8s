@@ -8,18 +8,18 @@ on:
         required: true
         type: choice
         options:
-          - AWS
           - GCP
-      environment:
-        description: "Target environment"
+          - AWS
+      env_type:
+        description: "Environment type"
         required: true
         type: choice
         options:
           - dev
           - staging
           - prod
-      cluster_name:
-        description: "K8S cluster name (only lowercase letters, numbers, and hyphens. Must start with a lowercase letter)"
+      env_name:
+        description: "K8S environment (cluster) name (only lowercase letters, numbers, and hyphens. Must start with a lowercase letter)"
         required: true
         type: string
 
@@ -32,7 +32,7 @@ env:
   PROJECT_ID: ${{ vars.PROJECT_ID}}
   TF_VAR_project_id: ${{ vars.PROJECT_ID}}
   TF_VAR_region: ${{ vars.REGION }}
-  ENVIRONMENT: ${{ inputs.environment }}
+  env_type: ${{ inputs.env_type }}
 
 jobs:
   terraform:
@@ -47,9 +47,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate K8S cluster name
+      - name: Validate K8S environment (cluster) name
         run: |
-          NAME="${{ inputs.cluster_name }}"
+          NAME="${{ inputs.env_name }}"
 
           if [[ ! "$NAME" =~ ^[a-z]([-a-z0-9]{0,38}[a-z0-9])?$ ]]; then
             echo "❌ Invalid K8S cluster name"
@@ -88,7 +88,7 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
+            -backend-config="prefix=${{ inputs.env_type }}/${{ inputs.env_name }}"
 
       - name: Terraform Validate
         run: terraform validate
@@ -96,8 +96,9 @@ jobs:
       - name: Terraform Plan
         run: |
           terraform plan \
-            -var="cluster_name=${{ inputs.cluster_name }}" \
-            -var-file="./envs/${{ inputs.environment }}.tfvars" \
+            -var="env_type=${{ inputs.env_type }}" \
+            -var="env_name=${{ inputs.env_name }}" \
+            -var-file="./envs/${{ inputs.env_type }}.tfvars" \
             -out=tfplan
 
 
@@ -105,8 +106,8 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           terraform apply \
-            -var="cluster_name=${{ inputs.cluster_name }}" \
-            -var-file="./envs/${{ inputs.environment }}.tfvars" \
+            -var="env_name=${{ inputs.env_name }}" \
+            -var-file="./envs/${{ inputs.env_type }}.tfvars" \
             -auto-approve \
             tfplan
 
@@ -116,7 +117,7 @@ jobs:
       - name: Get K8S credentials
         run: |
           gcloud container clusters get-credentials \
-            ${{ inputs.cluster_name }} \
+            ${{ inputs.env_name }} \
             --location $(terraform output -raw location) \
             --project ${{ env.PROJECT_ID }}
 

@@ -55,5 +55,5 @@ output "gke_cluster_endpoint" {
 #######################################
 output "gcp_labels_aws_tags" {
   description = "Labels / tags applied to resources"
-  value       = var.gcp_labels_aws_tags
+  value       = local.gcp_labels_aws_tags
 }
