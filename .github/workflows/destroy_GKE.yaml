@@ -1,44 +1,30 @@
-name: Terraform GKE Destroy
+name: Terraform K8S Destroy
 
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: "Target environment"
+      env_type:
+        description: "Environment type"
         required: true
         type: choice
-        options:
-          - dev
-          - staging
-          - prod  
-      cluster_name:
-        description: "GKE cluster name to destroy"
+        options: [dev, staging, prod]
+      env_name:
+        description: "K8S environment (cluster) name"
         required: true
         type: string
-      confirm:
-        description: "Type DESTROY to confirm infrastructure deletion"
-        required: true
-        default: "DESTROY"
-      remove_from_state:
-        description: "Remove protected resources from Terraform state (DANGEROUS)"
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
-  id-token: write   # REQUIRED for Workload Identity Federation
+  id-token: write
 
 env:
   PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
   PROJECT_ID: ${{ vars.PROJECT_ID }}
   TF_VAR_project_id: ${{ vars.PROJECT_ID }}
   TF_VAR_region: ${{ vars.REGION }}
-  ENVIRONMENT: ${{ github.event.inputs.environment }}
 
 jobs:
-  terraform:
-    name: Terraform Destroy
+  destroy:
     runs-on: ubuntu-latest
 
     defaults:
@@ -46,15 +32,14 @@ jobs:
         working-directory: terraform/gcp
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Authenticate to Google Cloud (WIF)
         uses: google-github-actions/auth@v3
         with:
           project_id: ${{ env.PROJECT_ID }}
-          workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-          service_account: github-terraform@chatgpt1-goland1.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{env.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: ${{ vars.runner_service_account }}@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -64,21 +49,108 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
+            -backend-config="prefix=${{ inputs.env_type }}/${{ inputs.env_name }}"
 
-      #- name: Force unlock Terraform state (emergency)
-      #  run: terraform force-unlock -force 1768193517967298 
-                 
-      - name: Remove protected GKE cluster from state (last resort)
-        if: github.event.inputs.remove_from_state == 'true'
+      - name: Disable deletion protection
         run: |
-          terraform state list
-          terraform state rm module.gke.google_container_cluster.this
+          terraform apply \
+            -var="env_type=${{ inputs.env_type }}" \
+            -var="env_name=${{ inputs.env_name }}" \
+            -var-file="./envs/${{inputs.env_name}}.tfvars" \
+            -auto-approve \
+            -var="deletion_protection=false"
 
       - name: Terraform Destroy
-        if: github.event.inputs.confirm == 'DESTROY'
         run: |
           terraform destroy \
-            -var="cluster_name=${{ inputs.cluster_name }}" \
-            -var-file="./envs/${{ inputs.environment }}.tfvars" \
+            -var="env_type=${{ inputs.env_type }}" \
+            -var="env_name=${{ inputs.env_name }}" \
+            -var-file="./envs/${{inputs.env_name}}.tfvars" \
             -auto-approve
+
+
+#name: Terraform GKE Destroy
+#
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      environment:
+#        description: "Target environment"
+#        required: true
+#        type: choice
+#        options:
+#          - dev
+#          - staging
+#          - prod  
+#      cluster_name:
+#        description: "GKE cluster name to destroy"
+#        required: true
+#        type: string
+#      confirm:
+#        description: "Type DESTROY to confirm infrastructure deletion"
+#        required: true
+#        default: "DESTROY"
+#      remove_from_state:
+#        description: "Remove protected resources from Terraform state (DANGEROUS)"
+#        required: false
+#        type: boolean
+#        default: false
+#
+#permissions:
+#  contents: read
+#  id-token: write   # REQUIRED for Workload Identity Federation
+#
+#env:
+#  PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
+#  PROJECT_ID: ${{ vars.PROJECT_ID }}
+#  TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+#  TF_VAR_region: ${{ vars.REGION }}
+#  ENVIRONMENT: ${{ github.event.inputs.environment }}
+#
+#jobs:
+#  terraform:
+#    name: Terraform Destroy
+#    runs-on: ubuntu-latest
+#
+#    defaults:
+#      run:
+#        working-directory: terraform/gcp
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Authenticate to Google Cloud (WIF)
+#        uses: google-github-actions/auth@v3
+#        with:
+#          project_id: ${{ env.PROJECT_ID }}
+#          workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+#          service_account: github-terraform@chatgpt1-goland1.iam.gserviceaccount.com
+#
+#      - name: Set up Terraform
+#        uses: hashicorp/setup-terraform@v3
+#        with:
+#          terraform_version: 1.14
+#
+#      - name: Terraform Init
+#        run: |
+#          terraform init \
+#            -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
+#
+#      #- name: Force unlock Terraform state (emergency)
+#      #  run: terraform force-unlock -force 1768193517967298 
+#                 
+#      - name: Remove protected GKE cluster from state (last resort)
+#        if: github.event.inputs.remove_from_state == 'true'
+#        run: |
+#          terraform state list
+#          terraform state rm module.gke.google_container_cluster.this
+#
+#      - name: Terraform Destroy
+#        if: github.event.inputs.confirm == 'DESTROY'
+#        run: |
+#          terraform destroy \
+#            -var="cluster_name=${{ inputs.cluster_name }}" \
+#            -var-file="./envs/${{ inputs.environment }}.tfvars" \
+#            -auto-approve
+#

@@ -94,7 +94,7 @@ jobs:
           terraform plan \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_name=${{ inputs.env_name }}" \
-            -var-file="./envs/${{ inputs.env_type }}.tfvars" \
+            -var-file="./envs/${{inputs.env_name}}.tfvars" \
             -out=tfplan
 
       - name: Terraform Apply
@@ -103,7 +103,7 @@ jobs:
           terraform apply \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_name=${{ inputs.env_name }}" \
-            -var-file="./envs/${{ inputs.env_type }}.tfvars" \
+            -var-file="./envs/${{inputs.env_name}}.tfvars" \
             -auto-approve \
             tfplan
 
@@ -114,7 +114,7 @@ jobs:
         run: |
           gcloud container clusters get-credentials \
             ${{ inputs.env_name }} \
-            --location $(terraform output -raw location) \
+            --location $(terraform output -raw cluster_location) \
             --project ${{ env.PROJECT_ID }}
 
       - name: Verify cluster access
