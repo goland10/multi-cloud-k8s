@@ -1,4 +1,4 @@
-# GKE-Github_Actions
+# Multi-cloud kubernetes deployment
 
 This project demonstrates a production-style deployment of Kubernetes on AWS/GCP, built using Github Actions, Terraform and SRE best practices.
 The automation is intended to be used by dev/staging/prod teams to deploy k8s clusters with a single click.
