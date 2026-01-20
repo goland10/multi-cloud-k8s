@@ -96,15 +96,11 @@ jobs:
             -var-file="./envs/${{ inputs.env_type }}.tfvars" \
             -out=tfplan
 
-      - name: Stop workflow
-        run: |
-          echo "Intentional stop"
-          exit 1
-######################################
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: |
           terraform apply \
+            -var="env_type=${{ inputs.env_type }}" \
             -var="env_name=${{ inputs.env_name }}" \
             -var-file="./envs/${{ inputs.env_type }}.tfvars" \
             -auto-approve \
@@ -123,4 +119,9 @@ jobs:
       - name: Verify cluster access
         run: |
           kubectl version --client
-          kubectl get nodes            
+          kubectl get nodes  
+#      - name: Stop workflow
+#        run: |
+#          echo "Intentional stop"
+#          exit 1
+######################################                    
