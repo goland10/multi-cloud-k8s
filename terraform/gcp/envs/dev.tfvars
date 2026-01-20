@@ -34,12 +34,12 @@ node_identity_roles = [
 # Location
 # -------------------------------------------------------------------
 #Control plain location.
-location = "europe-west1"         # region for regional cluster, zone for zonal cluster
+location = "europe-west1-d"         # region for regional cluster, zone for zonal cluster
 
 #node_locations: worker nodes location
 #Only for GKE. 
 #Comment 'node_locations', if you want to use all the zones in the region.
-node_locations = ["europe-west1-c","europe-west1-d"]        
+#node_locations = ["europe-west1-c","europe-west1-d"]        
 
 # -------------------------------------------------------------------
 # GKE node configuration
