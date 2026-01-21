@@ -49,7 +49,7 @@ jobs:
 
       - name: Validate K8S environment (cluster) name
         run: |
-          NAME="${{ inputs.env_number }}"
+          NAME="${{inputs.env_type}}-{{inputs.env_number}}"
 
           if [[ ! "$NAME" =~ ^[a-z]([-a-z0-9]{0,38}[a-z0-9])?$ ]]; then
             echo "❌ Invalid K8S cluster name"
