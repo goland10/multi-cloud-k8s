@@ -86,38 +86,38 @@ variable "region" {
 #######################################
 # Network
 #######################################
-variable "vpc" {
-  description = "VPC / network name"
-  type        = string
-}
+#variable "vpc" {
+#  description = "VPC / network name"
+#  type        = string
+#}
 
-variable "subnet_name" {
-  description = "Name of the subnetwork"
-  type        = string
-}
+#variable "subnet_name" {
+#  description = "Name of the subnetwork"
+#  type        = string
+#}
 
 variable "nodes_cidr" {
   description = "CIDR range for worker nodes"
   type        = string
 }
 
-variable "pods_cidr" {
-  description = "CIDR range for pods"
-  type        = string
-}
+#variable "pods_cidr" {
+#  description = "CIDR range for pods"
+#  type        = string
+#}
 
-variable "services_cidr" {
-  description = "CIDR range for services"
-  type        = string
-}
+#variable "services_cidr" {
+#  description = "CIDR range for services"
+#  type        = string
+#}
 
 #######################################
 # IAM (node service account)
 #######################################
-variable "node_identity" {
-  description = "Node service account / identity name"
-  type        = string
-}
+#variable "node_identity" {
+#  description = "Node service account / identity name"
+#  type        = string
+#}
 
 variable "node_identity_roles" {
   description = "IAM roles attached to the node service account"
