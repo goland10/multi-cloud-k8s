@@ -46,8 +46,8 @@ node_locations = ["europe-west1-c","europe-west1-d"]
 # -------------------------------------------------------------------
 # GKE node configuration
 # -------------------------------------------------------------------
-node_instance_type = "e2-medium"
-node_disk_size_gb  = 20
+node_instance_type = "e2-medium"  # e2-medium | e2-standard-4 | n2-standard-4
+node_disk_size_gb  = 20           # 20 | 30 | 50
 
 node_min   = 1
 node_max   = 2
@@ -59,5 +59,5 @@ node_count = 1
 deletion_protection = false
 release_channel     = "RAPID"   # RAPID | REGULAR | STABLE and more
 
-logging_components    = ["SYSTEM_COMPONENTS"]
-monitoring_components = []
+logging_components    = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
+monitoring_components = []                      # "SYSTEM_COMPONENTS"
