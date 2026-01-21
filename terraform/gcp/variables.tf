@@ -1,6 +1,21 @@
 #######################################
 # Environment identity
 #######################################
+variable "env_type" {
+  description = "Environment type (dev, staging, prod)"
+  type        = string
+
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.env_type)
+    error_message = "env_type must be one of: dev, staging, prod."
+  }
+}
+
+variable "env_number" {
+  description = "Numeric environment number (e.g. 1 or 01 for dev-01, 2 or 02 for dev-02)"
+  type        = number
+}
+
 variable "env_name" {
   description = "Environment name (e.g. dev-01, staging-01, prod-01)"
   type        = string
@@ -11,15 +26,6 @@ variable "env_name" {
   }
 }
 
-variable "env_type" {
-  description = "Environment type (dev, staging, prod)"
-  type        = string
-
-  validation {
-    condition     = contains(["dev", "staging", "prod"], var.env_type)
-    error_message = "env_type must be one of: dev, staging, prod."
-  }
-}
 
 variable "runner_service_account" {
   description = "Service account used by GitHub Actions runner"
@@ -82,6 +88,11 @@ variable "region" {
 #######################################
 variable "vpc" {
   description = "VPC / network name"
+  type        = string
+}
+
+variable "subnet_name" {
+  description = "Name of the subnetwork"
   type        = string
 }
 

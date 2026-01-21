@@ -8,6 +8,11 @@ variable "vpc_name" {
   }
 }
 
+variable "subnet_name" {
+  description = "Name of the subnetwork"
+  type        = string
+}
+
 variable "region" {
   description = "Region where the subnet will be created (e.g. europe-west1)"
   type        = string

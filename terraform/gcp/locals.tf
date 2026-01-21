@@ -7,6 +7,38 @@ locals {
   }
 }
 
+locals {
+  # Zero-pad env number (01, 02, etc.)
+  env_number_padded = format("%02d", var.env_number)
+
+  # Environment name
+  env_name = "${var.env_type}-${local.env_number_padded}"
+
+  # Node identity
+  node_identity = "${local.env_name}-node-identity"
+
+  # Extract octets from nodes CIDR (e.g. 10.11.0.0/16)
+  nodes_ip_parts = split(".", cidrhost(var.nodes_cidr, 0))
+
+  first_octet  = local.nodes_ip_parts[0]
+  second_octet = tonumber(local.nodes_ip_parts[1])
+
+  # Calculate derived CIDRs
+  pods_cidr = format(
+    "%s.%d.0.0/16",
+    local.first_octet,
+    local.second_octet + 10
+  )
+
+  services_cidr = format(
+    "%s.%d.0.0/20",
+    local.first_octet,
+    local.second_octet + 20
+  )
+  subnet_name = "${local.env_name}-subnet"
+}
+
+
 ##data "google_compute_zones" "this" {
 ##  region = var.region
 ##  status = "UP"

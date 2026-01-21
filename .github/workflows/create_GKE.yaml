@@ -28,11 +28,10 @@ permissions:
   id-token: write   # REQUIRED for Workload Identity Federation
 
 env:
-  PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
-  PROJECT_ID: ${{ vars.PROJECT_ID}}
+  #PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
+  #PROJECT_ID: ${{ vars.PROJECT_ID}}
   TF_VAR_project_id: ${{ vars.PROJECT_ID}}
   TF_VAR_region: ${{ vars.REGION }}
-  env_type: ${{ inputs.env_type }}
   TF_VAR_runner_service_account: ${{ vars.runner_service_account}}
 
 jobs:
@@ -67,8 +66,8 @@ jobs:
       - name: Authenticate to Google Cloud (WIF)
         uses: google-github-actions/auth@v3
         with:
-          project_id: ${{ env.PROJECT_ID }}
-          workload_identity_provider: projects/${{env.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          project_id: ${{ vars.PROJECT_ID }}
+          workload_identity_provider: projects/${{vars.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
           service_account: ${{vars.runner_service_account}}@${{vars.PROJECT_ID}}.iam.gserviceaccount.com
 
       - name: Set up Terraform
@@ -117,7 +116,7 @@ jobs:
           gcloud container clusters get-credentials \
             ${{ inputs.env_name }} \
             --location $(terraform output -raw cluster_location) \
-            --project ${{ env.PROJECT_ID }}
+            --project ${{ vars.PROJECT_ID }}
 
       - name: Verify cluster access
         run: |

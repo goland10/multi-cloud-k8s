@@ -1,8 +1,9 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
+env_type = "dev"
+env_number = 01
 #env_name = "dev-01"
-#env_type = "dev"
 #project_id = "github-actions-terraform-k8s"
 #runner_service_account = "github-terraform-k8s"
 
@@ -16,15 +17,15 @@ owner = "yaniv"
 # -------------------------------------------------------------------
 # Network
 # -------------------------------------------------------------------
-vpc           = "dev-01"
+#vpc           = "dev-01"
 nodes_cidr    = "10.10.0.0/16"
-pods_cidr     = "10.20.0.0/16"
-services_cidr = "10.30.0.0/20"
+#pods_cidr     = "10.20.0.0/16"
+#services_cidr = "10.30.0.0/20"
 
 # -------------------------------------------------------------------
 # IAM (node service account)
 # -------------------------------------------------------------------
-node_identity = "dev-01-node-identity"
+#node_identity = "dev-01-node-identity"
 
 node_identity_roles = [
   "roles/logging.logWriter",
