@@ -19,7 +19,7 @@ on:
           - staging
           - prod
       env_number:
-        description: "K8S environment (cluster) number (only lowercase letters, numbers, and hyphens. Must start with a lowercase letter)"
+        description: "K8S environment (cluster) number (e.g. 1 or 01 for dev-01, 2 or 02 for dev-02)"
         required: true
         type: string
 
