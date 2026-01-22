@@ -99,8 +99,8 @@ These variables must be configured in **GitHub → Settings → Variables**.
 
 | Variable name | Example | Description |
 |--------------|---------|-------------|
-| `PROJECT_ID` | `github-actions-terraform-k8s` | GCP project ID |
-| `PROJECT_NUMBER` | `933446578355` | GCP project number (required for WIF) |
+| `PROJECT_ID` | `github-terraform-k8s` | GCP project ID |
+| `PROJECT_NUMBER` | `566224477722` | GCP project number (required for WIF) |
 | `REGION` | `europe-west1` | Default GCP region |
 | `runner_service_account` | `github-terraform-k8s` | Service account impersonated by GitHub Actions |
 
