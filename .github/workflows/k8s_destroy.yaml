@@ -1,0 +1,61 @@
+name: Terraform K8S Destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      env_type:
+        description: "Environment type"
+        required: true
+        type: choice
+        options: [dev, staging, prod]
+      env_number:
+        description: "K8S environment (cluster) number"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+  TF_VAR_region: ${{ vars.REGION }}
+  TF_VAR_runner_service_account: ${{ vars.runner_service_account }}
+  TF_VAR_env_type: ${{ inputs.env_type }}
+  TF_VAR_env_number: ${{ inputs.env_number }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform/gcp
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (WIF)
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: ${{ vars.runner_service_account }}@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="prefix=${{ inputs.env_type }}/${{ inputs.env_number }}"
+
+      - name: Terraform Destroy
+        run: |
+          terraform destroy \
+            -var="env_type=${{ inputs.env_type }}" \
+            -var="env_number=${{ inputs.env_number }}" \
+            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+            -auto-approve

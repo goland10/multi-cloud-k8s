@@ -7,9 +7,10 @@ The automation is intended to be used by dev/staging/prod teams to deploy k8s cl
 * [GCP prerequisits](docs/prerequisites.md#gcp)
 * [AWS prerequisits](docs/prerequisites.md#aws)
 
-## Phase 1 - Create 2 Github Actions workflows
-1. GKE cluster creation using Terrarorm
-2. GKE cluster destruction using Terrarorm
+## Github Actions workflows
+1. Terraform K8S Deploy -- K8S cluster creation using Terrarorm [more details](./docs/k8s_create.md)
+2. Terraform K8S Destroy -- K8S cluster destruction using Terrarorm [more details](./docs/k8s_destroy.md)
+3. Disable deletion protection (prod) [more details](./docs/disable_deletion_protection.md)
 
 
 ### GKE cluster creation using Terrarorm
