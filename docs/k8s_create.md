@@ -1,10 +1,11 @@
 ## Terraform GKE Deployment via GitHub Actions
 
-This GitHub Actions workflow provisions and manages a **Google Kubernetes Engine (GKE) cluster** using **Terraform**, authenticated through **GitHub Actions → Google Cloud Workload Identity Federation (WIF)**.
+This GitHub Actions workflow provisions and manages a Google Kubernetes Engine (GKE) cluster using Terraform, authenticated through GitHub Actions → Google Cloud Workload Identity Federation (WIF).
 
-The workflow is triggered manually and is designed to be **environment-aware**, **idempotent**, and safe to re-run.
+The workflow is triggered manually and is designed to be **environment-aware**, idempotent, and safe to re-run.
 
----
+**Bootstrap a complete environment with minimum settings and zero effort.**
+
 ## Who this automation is intended for?
 This automation is intended to be used by developers/operators.
 ## How to run this automation?
@@ -19,15 +20,10 @@ When triggered, the workflow performs the following steps:
 ### 1. Cluster name validation
 The cluster name is constructed as:
 
-
-
 <env_type>-<env_number>
 
 
-Example:
-
-
-dev-01
+Example:     dev-01
 
 
 The workflow validates the name to ensure it:
