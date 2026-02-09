@@ -1,20 +1,8 @@
 name: Deploy Cluster Tools
 
 on:
-  #push:
-  #  branches:
-  #    - main
-  #pull_request:
   workflow_dispatch: 
     inputs:
-#      environment:
-#        description: "Target environment"
-#        required: true
-#        type: choice
-#        options:
-#          - dev
-#          - staging
-#          - prod
       env_type:
         description: "Environment type"
         required: true
@@ -27,21 +15,12 @@ on:
         description: "K8S environment (cluster) number (e.g. 1 or 01 for dev-01, 2 or 02 for dev-02)"
         required: true
         type: string          
-#      cluster_name:
-#        description: "GKE cluster name (only lowercase letters, numbers, and hyphens. Must start with a lowercase letter)"
-#        required: true
-#        type: string
 
 permissions:
   contents: read
   id-token: write   # REQUIRED for Workload Identity Federation
 
 env:
-#  PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
-#  PROJECT_ID: ${{ vars.PROJECT_ID}}
-#  TF_VAR_project_id: ${{ vars.PROJECT_ID}}
-#  TF_VAR_region: ${{ vars.REGION }}
-#  ENVIRONMENT: ${{ github.event.inputs.environment }}
   TF_VAR_project_id: ${{ vars.PROJECT_ID}}
   TF_VAR_region: ${{ vars.REGION }}
   TF_VAR_runner_service_account: ${{ vars.runner_service_account}}
@@ -101,48 +80,6 @@ jobs:
           terraform init \
             -backend-config="prefix=${{ inputs.env_type }}/${{ inputs.env_number }}"
 
-
-#      - name: Checkout repository
-#        uses: actions/checkout@v4
-#
-#      - name: Validate GKE cluster name
-#        run: |
-#          NAME="${{ inputs.cluster_name }}"
-#
-#          if [[ ! "$NAME" =~ ^[a-z]([-a-z0-9]{0,38}[a-z0-9])?$ ]]; then
-#            echo "❌ Invalid GKE cluster name"
-#            echo "Rules:"
-#            echo " - 1–40 characters"
-#            echo " - lowercase letters, numbers, hyphens"
-#            echo " - must start with a letter"
-#            echo " - must not end with a hyphen"
-#            exit 1
-#          fi
-#
-#          echo "✅ GKE cluster name is valid: $NAME"
-#
-#      - name: Authenticate to Google Cloud (WIF)
-#        uses: google-github-actions/auth@v3
-#        with:
-#          project_id: ${{ env.PROJECT_ID }}
-#          workload_identity_provider: projects/${{env.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-#          service_account: github-terraform@chatgpt1-goland1.iam.gserviceaccount.com
-#      
-#      - name: Set up Terraform
-#        uses: hashicorp/setup-terraform@v3
-#        with:
-#          terraform_version: 1.14
-#      
-#      - name: Debug OIDC token
-#        run: |
-#          echo "Repository: $GITHUB_REPOSITORY"
-#          echo "Ref: $GITHUB_REF"
-#      
-#      - name: Terraform Init
-#        run: |
-#          terraform init \
-#            -backend-config="prefix=envs/${{ inputs.environment }}/${{ inputs.cluster_name }}"
-
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
@@ -154,21 +91,6 @@ jobs:
             ${{inputs.env_type}}-${{inputs.env_number}} \
             --location $(terraform output -raw cluster_location) \
             --project ${{ vars.PROJECT_ID }}
-
-
-#      - name: Set up gcloud
-#        uses: google-github-actions/setup-gcloud@v2
-#        with:
-#          install_components: gke-gcloud-auth-plugin
-#
-#      - name: Get GKE credentials
-#        run: |
-#          gcloud container clusters get-credentials \
-#            ${{ inputs.cluster_name }} \
-#            --location $(terraform output -raw location) \
-#            --project ${{ env.PROJECT_ID }}
-      
-      #- run: gcloud components list
 
       - name: Verify cluster access
         run: |
@@ -186,12 +108,12 @@ jobs:
             --timeout 20m \
             --set server.service.type=LoadBalancer
 #           --version 7.7.0 \
-#           --set server.service.type=LoadBalancer \
 
       - name: Wait for ArgoCD LoadBalancer
         run: |
           echo "Waiting for ArgoCD LoadBalancer external IP..."
-          for i in {1..60}; do
+          for i in {1..60}; 
+          do
             EXTERNAL_IP_or_DNS=$(kubectl get svc -n argocd  argocd-server  \
               -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}')
       
@@ -205,14 +127,3 @@ jobs:
       
           echo "Timed out waiting for LoadBalancer"
           exit 1
-
-
-
-
-
-
-
-
-
-
-

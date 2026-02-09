@@ -18,9 +18,9 @@ owner = "yaniv"
 # Network
 # -------------------------------------------------------------------
 #vpc           = "dev-01"
-nodes_cidr    = "10.10.0.0/16"
-#pods_cidr     = "10.20.0.0/16"
-#services_cidr = "10.30.0.0/20"
+nodes_cidr    = "10.10.0.0/16"    #This is the base cidr
+#pods_cidr     = "10.20.0.0/16"   #base cidr second octet + 10
+#services_cidr = "10.30.0.0/20"   #base cidr second octet + 20
 
 # -------------------------------------------------------------------
 # IAM (node service account)
