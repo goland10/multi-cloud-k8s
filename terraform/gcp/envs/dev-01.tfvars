@@ -37,21 +37,21 @@ node_identity_roles = [
 # Location
 # -------------------------------------------------------------------
 #Control plain location.
-location = "europe-west1-b" # region for regional cluster, zone for zonal cluster
+location = "europe-west1" # region for regional cluster, zone for zonal cluster
 
 #node_locations: worker nodes location
 #Only for GKE. 
 #Comment 'node_locations', if you want to use all the zones in the region.
-node_locations = ["europe-west1-c"] #,"europe-west1-d"]        
+#node_locations = ["europe-west1-c"] #,"europe-west1-d"]        
 
 # -------------------------------------------------------------------
 # GKE node configuration
 # -------------------------------------------------------------------
-node_instance_type = "e2-medium"  # e2-medium | e2-standard-4 | n2-standard-4
-node_disk_size_gb  = 20           # 20 | 30 | 50
+node_instance_type = "e2-standard-4"  # e2-medium | e2-standard-4 | n2-standard-4
+node_disk_size_gb  = 30           # 20 | 30 | 50
 
 node_min   = 1
-node_max   = 2
+node_max   = 3
 node_count = 1
 
 # -------------------------------------------------------------------
@@ -61,4 +61,4 @@ deletion_protection = false
 release_channel     = "RAPID"   # RAPID | REGULAR | STABLE and more
 
 logging_components    = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
-monitoring_components = []                      # "SYSTEM_COMPONENTS"
+monitoring_components = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
