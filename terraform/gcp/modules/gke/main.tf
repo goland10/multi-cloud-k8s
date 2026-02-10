@@ -15,6 +15,12 @@ resource "google_container_cluster" "this" {
   network    = var.network
   subnetwork = var.subnetwork
 
+  # Privacy
+  private_cluster_config {
+  enable_private_nodes = var.enable_private_nodes
+  enable_private_endpoint = var.enable_private_endpoint
+  }
+
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_range_name
     services_secondary_range_name = var.services_range_name

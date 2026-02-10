@@ -43,6 +43,18 @@ variable "node_locations" {
   }
 }
 
+variable "enable_private_nodes" {
+  description = "Whether GKE nodes should have only private IP addresses"
+  type        = bool
+  default     = false
+}
+
+variable "enable_private_endpoint" {
+  description = "Whether the GKE control plane endpoint is private only"
+  type        = bool
+  default     = false
+}
+
 #######################################
 # Networking
 #######################################

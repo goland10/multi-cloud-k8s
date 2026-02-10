@@ -108,6 +108,12 @@ jobs:
             -auto-approve \
             tfplan
 
+      - name: Stop workflow
+        run: |
+          echo "Intentional stop"
+          exit 0
+#####################################  
+
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
@@ -124,8 +130,4 @@ jobs:
         run: |
           kubectl version --client
           kubectl get nodes  
-#      - name: Stop workflow
-#        run: |
-#          echo "Intentional stop"
-#          exit 1
-######################################                    
+                  

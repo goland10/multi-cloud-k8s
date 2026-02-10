@@ -38,6 +38,10 @@ locals {
   subnet_name = "${local.env_name}-subnet"
 }
 
+#locals {
+#  effective_enable_private_nodes = var.private_cluster ? true : var.enable_private_nodes
+#  effective_enable_private_endpoint = var.private_cluster ? true : var.enable_private_endpoint
+#}
 
 ##data "google_compute_zones" "this" {
 ##  region = var.region

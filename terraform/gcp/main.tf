@@ -51,10 +51,14 @@ module "gke" {
 
   # Network
   network    = local.env_name
-  subnetwork = local.subnet_name
+  subnetwork = local.subnet_name    #Node range
 
   pods_range_name     = module.network.pods_range_name
   services_range_name = module.network.services_range_name
+  
+  # Privacy
+  enable_private_nodes = var.private_cluster
+  enable_private_endpoint = var.private_cluster
 
   # Node configuration
   node_instance_type = var.node_instance_type

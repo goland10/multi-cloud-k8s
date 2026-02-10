@@ -83,6 +83,16 @@ variable "region" {
   type        = string
 }
 
+################
+# GKE Privacy
+################
+
+variable "private_cluster" {
+  description = "Whether the GKE cluster should be private"
+  type        = bool
+  default     = false
+}
+
 #######################################
 # Network
 #######################################
