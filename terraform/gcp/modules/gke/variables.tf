@@ -43,6 +43,10 @@ variable "node_locations" {
   }
 }
 
+##########################
+# Privacy
+##########################
+
 variable "enable_private_nodes" {
   description = "Whether GKE nodes should have only private IP addresses"
   type        = bool
@@ -53,6 +57,27 @@ variable "enable_private_endpoint" {
   description = "Whether the GKE control plane endpoint is private only"
   type        = bool
   default     = false
+}
+
+variable "enable_master_authorized_networks" {
+  description = "Enable Master Authorized Networks for the GKE control plane"
+  type        = bool
+  default     = false
+}
+
+variable "master_authorized_networks_cidr_blocks" {
+  description = "List of CIDR blocks allowed to access the GKE control plane"
+  type = list(object({
+    cidr_block   = string
+    display_name = string
+  }))
+
+  default = [
+    {
+      cidr_block   = "10.0.0.0/8"
+      display_name = "internal"
+    }
+  ]
 }
 
 #######################################
