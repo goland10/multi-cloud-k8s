@@ -18,9 +18,9 @@ owner = "yaniv"
 # Network
 # -------------------------------------------------------------------
 #vpc           = "dev-01"
-nodes_cidr    = "10.12.0.0/16"
-#pods_cidr     = "10.20.0.0/16"
-#services_cidr = "10.30.0.0/20"
+nodes_cidr    = "10.14.0.0/16"    #This is the base cidr
+#pods_cidr     = "10.24.0.0/16"   #base cidr second octet + 10
+#services_cidr = "10.34.0.0/20"   #base cidr second octet + 20
 
 # -------------------------------------------------------------------
 # IAM (node service account)
@@ -44,14 +44,16 @@ location = "europe-west1" # region for regional cluster, zone for zonal cluster
 #Comment 'node_locations', if you want to use all the zones in the region.
 #node_locations = ["europe-west1-c"] #,"europe-west1-d"]        
 
+private_cluster = true
+
 # -------------------------------------------------------------------
 # GKE node configuration
 # -------------------------------------------------------------------
-node_instance_type = "e2-standard-4"  # e2-medium | e2-standard-4 | n2-standard-4
+node_instance_type = "n2-standard-4"  # e2-medium | e2-standard-4 | n2-standard-4
 node_disk_size_gb  = 50           # 20 | 30 | 50
 
 node_min   = 1
-node_max   = 2
+node_max   = 3
 node_count = 1
 
 # -------------------------------------------------------------------
