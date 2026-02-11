@@ -108,26 +108,26 @@ jobs:
             -auto-approve \
             tfplan
 
-      - name: Stop workflow
-        run: |
-          echo "Intentional stop"
-          exit 0
+#      - name: Stop workflow
+#        run: |
+#          echo "Intentional stop"
+#          exit 0
 #####################################  
 
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          install_components: gke-gcloud-auth-plugin
-          
-      - name: Get K8S credentials
-        run: |
-          gcloud container clusters get-credentials \
-            ${{inputs.env_type}}-${{inputs.env_number}} \
-            --location $(terraform output -raw cluster_location) \
-            --project ${{ vars.PROJECT_ID }}
-
-      - name: Verify cluster access
-        run: |
-          kubectl version --client
-          kubectl get nodes  
+#      - name: Set up gcloud
+#        uses: google-github-actions/setup-gcloud@v2
+#        with:
+#          install_components: gke-gcloud-auth-plugin
+#          
+#      - name: Get K8S credentials
+#        run: |
+#          gcloud container clusters get-credentials \
+#            ${{inputs.env_type}}-${{inputs.env_number}} \
+#            --location $(terraform output -raw cluster_location) \
+#            --project ${{ vars.PROJECT_ID }}
+#
+#      - name: Verify cluster access
+#        run: |
+#          kubectl version --client
+#          kubectl get nodes  
                   

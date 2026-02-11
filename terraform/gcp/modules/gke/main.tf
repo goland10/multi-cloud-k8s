@@ -22,9 +22,8 @@ resource "google_container_cluster" "this" {
   }
 
   master_authorized_networks_config {
-  #enable_master_authorized_networks = var.enable_private_endpoint
-
-  #cidr_blocks {}
+  
+  #cidr_blocks {
   #  cidr_block   = "10.0.0.0/8"
   #  display_name = "internal"
   #}
