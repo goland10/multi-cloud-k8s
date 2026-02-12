@@ -55,7 +55,7 @@ resource "google_container_cluster" "this" {
   # Cluster behavior
   deletion_protection      = var.deletion_protection
   remove_default_node_pool = var.env_type != "dev"
-  initial_node_count       = var.env_type == "dev" ? var.node_count : 1
+  initial_node_count       = var.env_type == "dev" ? 1 : var.node_count 
 
   release_channel {
     channel = var.release_channel
