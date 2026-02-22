@@ -16,17 +16,6 @@ variable "env_number" {
   type        = number
 }
 
-#variable "env_name" {
-#  description = "Environment name (e.g. dev-01, staging-01, prod-01)"
-#  type        = string
-#
-#  validation {
-#    condition     = length(var.env_name) > 0
-#    error_message = "env_name must not be empty."
-#  }
-#}
-
-
 variable "runner_service_account" {
   description = "Service account used by GitHub Actions runner"
   type        = string

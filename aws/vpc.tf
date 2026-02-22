@@ -2,36 +2,30 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-locals {
-  azs             = slice(data.aws_availability_zones.available.names, 0, 3)
-  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 3, k + 3)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 3, k)]
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 6.0"
 
-  name = var.cluster_name
+  name = local.env_name
   cidr = var.vpc_cidr
 
-  azs             = local.azs
+  azs             = var.azs
   public_subnets  = local.public_subnets
   private_subnets = local.private_subnets
   #public_subnet_suffix  = "SubnetPublic"
   #private_subnet_suffix = "SubnetPrivate"
 
-  enable_nat_gateway   = true
+  enable_nat_gateway   = false
   create_igw           = true
   enable_dns_hostnames = true
   single_nat_gateway   = true
 
   # Manage so we can name
-  manage_default_network_acl    = true
+  manage_default_network_acl    = false
   default_network_acl_tags      = { Name = "${var.cluster_name}-default" }
-  manage_default_route_table    = true
+  manage_default_route_table    = false
   default_route_table_tags      = { Name = "${var.cluster_name}-default" }
-  manage_default_security_group = true
+  manage_default_security_group = false
   default_security_group_tags   = { Name = "${var.cluster_name}-default" }
 
   public_subnet_tags = merge(local.tags, {

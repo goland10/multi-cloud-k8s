@@ -102,3 +102,9 @@ To run this automation on GCP successfully, make sure you have completed all the
     --uniform-bucket-level-access \
     ```
 # AWS
+
+1. Create bucket to store the state files.
+    ```bash
+    aws s3 mb --region eu-west-1 s3://github-k8s-terraform-state
+    ```
+2. 
