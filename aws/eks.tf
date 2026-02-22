@@ -1,8 +1,3 @@
-#locals {
-#  remote_node_cidr = var.remote_network_cidr
-#  remote_pod_cidr  = var.remote_pod_cidr
-#}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
@@ -38,56 +33,6 @@ module "eks" {
 
   create_security_group      = false
   create_node_security_group = false
-#  security_group_additional_rules = {
-#    hybrid-node = {
-#      cidr_blocks = [local.remote_node_cidr]
-#      description = "Allow all traffic from remote node/pod network"
-#      from_port   = 0
-#      to_port     = 0
-#      protocol    = "all"
-#      type        = "ingress"
-#    }
-#
-#    hybrid-pod = {
-#      cidr_blocks = [local.remote_pod_cidr]
-#      description = "Allow all traffic from remote node/pod network"
-#      from_port   = 0
-#      to_port     = 0
-#      protocol    = "all"
-#      type        = "ingress"
-#    }
-#  }
-#
-#  node_security_group_additional_rules = {
-#    hybrid_node_rule = {
-#      cidr_blocks = [local.remote_node_cidr]
-#      description = "Allow all traffic from remote node/pod network"
-#      from_port   = 0
-#      to_port     = 0
-#      protocol    = "all"
-#      type        = "ingress"
-#    }
-#
-#    hybrid_pod_rule = {
-#      cidr_blocks = [local.remote_pod_cidr]
-#      description = "Allow all traffic from remote node/pod network"
-#      from_port   = 0
-#      to_port     = 0
-#      protocol    = "all"
-#      type        = "ingress"
-#    }
-#  }
-#
-#
-#  remote_network_config = {
-#    remote_node_networks = {
-#      cidrs = [local.remote_node_cidr]
-#    }
-#    # Required if running webhooks on Hybrid nodes
-#    remote_pod_networks = {
-#      cidrs = [local.remote_pod_cidr]
-#    }
-#  }
 
   eks_managed_node_groups = {
     default = {
