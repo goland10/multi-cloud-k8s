@@ -90,11 +90,6 @@ jobs:
             -backend-config="key=${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate"
           # ^ S3 backend uses 'key' instead of GCS 'prefix'
 
-      - name: Stop workflow
-        run: |
-          echo "Intentional stop"
-          exit 1
-          
       - name: Terraform Validate
         run: terraform validate
 
@@ -105,6 +100,12 @@ jobs:
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -out=tfplan
+
+      - name: Stop workflow
+        run: |
+          echo "Intentional stop"
+          exit 1
+                      
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'

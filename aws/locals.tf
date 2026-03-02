@@ -1,7 +1,7 @@
 locals {
   tags = {
     created-by = "Golan"
-    env        = var.cluster_name
+    Environment  = local.env_name  #.cluster_name
   }
 }
 
