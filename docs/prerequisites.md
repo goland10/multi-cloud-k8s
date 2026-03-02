@@ -154,6 +154,7 @@ To run this automation on GCP successfully, make sure you have completed all the
     ```
 5. Attach permissions the role needs
     ```bash
+    # EKS
     aws iam attach-role-policy \
       --role-name $ROLE_NAME \
       --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy

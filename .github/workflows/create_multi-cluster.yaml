@@ -78,10 +78,7 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           # e.g. arn:aws:iam::123456789012:role/github-actions-eks-role
           aws-region: ${{ vars.AWS_REGION }}
-      - name: Stop workflow
-        run: |
-          echo "Intentional stop"
-          exit 0
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -93,6 +90,11 @@ jobs:
             -backend-config="key=${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate"
           # ^ S3 backend uses 'key' instead of GCS 'prefix'
 
+      - name: Stop workflow
+        run: |
+          echo "Intentional stop"
+          exit 1
+          
       - name: Terraform Validate
         run: terraform validate
 
