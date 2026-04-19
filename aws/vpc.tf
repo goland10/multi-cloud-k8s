@@ -22,17 +22,17 @@ module "vpc" {
 
   # Manage so we can name
   manage_default_network_acl    = false
-  default_network_acl_tags      = { Name = "${var.cluster_name}-default" }
+  default_network_acl_tags      = { Name = "${local.cluster_name}-default" }
   manage_default_route_table    = false
-  default_route_table_tags      = { Name = "${var.cluster_name}-default" }
+  default_route_table_tags      = { Name = "${local.cluster_name}-default" }
   manage_default_security_group = false
-  default_security_group_tags   = { Name = "${var.cluster_name}-default" }
+  default_security_group_tags   = { Name = "${local.cluster_name}-default" }
 
   public_subnet_tags = merge(local.tags, {
     "kubernetes.io/role/elb" = "1"
   })
   private_subnet_tags = merge(local.tags, {
-    "karpenter.sh/discovery"          = var.cluster_name
+    "karpenter.sh/discovery"          = local.cluster_name
     "kubernetes.io/role/internal-elb" = "1"
   })
 

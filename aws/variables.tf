@@ -16,11 +16,11 @@ variable "env_number" {
   type        = number
 }
 
-variable "cluster_name" {
-  description = "Name of the EKS cluster"
-  type        = string
-  default     = "dev-01"
-}
+#variable "cluster_name" {
+#  description = "Name of the EKS cluster"
+#  type        = string
+#  #default     = "dev-01"
+#}
 
 ################
 # Cluster Privacy
@@ -38,20 +38,52 @@ variable "azs" {
   default     = []
 }
 
-variable "cluster_version" {
+variable "kubernetes_version" {
   description = "EKS cluster version."
   type        = string
-  default     = "1.33"
-}
-
-variable "ami_release_version" {
-  description = "Default EKS AMI release version for node groups"
-  type        = string
-  default     = "1.33.0-20250704"
+  #default     = "1.33"
 }
 
 variable "vpc_cidr" {
   description = "Defines the CIDR block used on Amazon VPC created for Amazon EKS."
   type        = string
-  default     = "10.10.0.0/16"
+  #default     = "10.10.0.0/16"
 }
+
+variable "region" {
+  description = "AWS region"
+  type        = string  
+}
+# -------------------------------------------------------------------
+# EKS Worker node configuration
+# -------------------------------------------------------------------
+variable "instance_types" {
+  description = "List of instance types for the EKS managed node group"
+  type        = list(string)
+  default     = ["t3.small"]
+}
+
+variable "min_size" {
+  description = "Minimum number of nodes in the node group"
+  type        = number
+  default     = 2
+}
+
+variable "max_size" {
+  description = "Maximum number of nodes in the node group"
+  type        = number
+  default     = 6
+}
+
+variable "desired_size" {
+  description = "Desired number of nodes in the node group"
+  type        = number
+  default     = 2
+}
+
+#variable "release_version" {
+#  description = "Default EKS AMI release version for node groups"
+#  type        = string
+#  default     = "1.33.0-20250704"
+#}
+

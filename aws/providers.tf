@@ -10,7 +10,11 @@ terraform {
 }
 
 provider "aws" {
+  region = var.region
   default_tags {
-    tags = local.tags
+    tags = {
+      created-by = "Golan"
+      Environment  = local.env_name  #local.cluster_name
+    }
   }
 }

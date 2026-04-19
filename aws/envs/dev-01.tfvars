@@ -4,8 +4,6 @@
 #env_type = "dev"
 #env_number = 01
 #env_name = "dev-01"
-#project_id = "github-actions-terraform-k8s"
-#runner_service_account = "github-terraform-k8s"
 
 region = "eu-west-1"
 
@@ -36,31 +34,32 @@ node_identity_roles = [
 # -------------------------------------------------------------------
 # Location
 # -------------------------------------------------------------------
-#Control plain location.
-#location = "europe-west1" # region for regional cluster, zone for zonal cluster
-
-#node_locations: worker nodes location
-#Only for GKE. 
-#Comment 'node_locations', if you want to use all the zones in the region.
-#node_locations = ["europe-west1-c"] #,"europe-west1-d"]        
-azs = ["eu-west-1a"]      #AWS specific
+# Worker nodes location
+azs = ["eu-west-1a"]      # 1 AZ for single-node cluster, 2 AZs for dual-zone cluster, 3 AZs for multi-zone cluster
 private_cluster = true
 
 # -------------------------------------------------------------------
-# GKE node configuration
+# EKS Worker node configuration
 # -------------------------------------------------------------------
-node_instance_type = "e2-standard-4"  # e2-medium | e2-standard-4 | n2-standard-4
-node_disk_size_gb  = 30           # 20 | 30 | 50
-
-node_min   = 1
-node_max   = 3
-node_count = 1
+instance_types           = ["t3.small"]
+min_size     = 2
+max_size     = 6
+desired_size = 2
+#release_version = "1.33.0-20250704"
+#node_instance_type = "e2-standard-4"  # e2-medium | e2-standard-4 | n2-standard-4
+#node_disk_size_gb  = 30           # 20 | 30 | 50
+#
+#node_min   = 1
+#node_max   = 3
+#node_count = 1
 
 # -------------------------------------------------------------------
 # GKE cluster behavior
 # -------------------------------------------------------------------
-deletion_protection = false
-release_channel     = "RAPID"   # RAPID | REGULAR | STABLE and more
+kubernetes_version = "1.33"
 
-logging_components    = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
-monitoring_components = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
+#deletion_protection = false
+#release_channel     = "RAPID"   # RAPID | REGULAR | STABLE and more
+#
+#logging_components    = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
+#monitoring_components = ["SYSTEM_COMPONENTS"]   # "SYSTEM_COMPONENTS"
