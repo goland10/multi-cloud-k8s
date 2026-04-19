@@ -111,9 +111,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           terraform apply \
-#            -var="env_type=${{ inputs.env_type }}" \
-#            -var="env_number=${{ inputs.env_number }}" \
-#            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -auto-approve \
             tfplan
 
