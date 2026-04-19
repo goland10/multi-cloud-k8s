@@ -22,6 +22,16 @@ variable "env_number" {
 #  #default     = "dev-01"
 #}
 
+
+#######################################
+# Tags / cost allocation
+#######################################
+
+variable "owner" {
+  type        = string
+  description = "Environment owner"
+}
+
 ################
 # Cluster Privacy
 ################

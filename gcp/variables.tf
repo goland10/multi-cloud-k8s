@@ -32,7 +32,7 @@ variable "runner_service_account" {
 
 variable "owner" {
   type        = string
-  description = "Owner for this environment"
+  description = "Environment owner"
 }
 
 #variable "gcp_labels_aws_tags" {
