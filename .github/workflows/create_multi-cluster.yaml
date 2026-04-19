@@ -11,7 +11,7 @@ on:
           - GCP
           - AWS
       env_type:
-        description: "Environment type"
+        description: "Environment type (tfvars file name must adhere to 'env_type-env_number.tfvars')"
         required: true
         type: choice
         options:
@@ -19,7 +19,7 @@ on:
           - staging
           - prod
       env_number:
-        description: "K8S environment (cluster) number (e.g. 1 or 01 for dev-01, 2 or 02 for dev-02)"
+        description: "K8S environment (cluster) number (e.g. 01 for dev-01, 02 for dev-02)"
         required: true
         type: string
 
@@ -111,9 +111,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           terraform apply \
-            -var="env_type=${{ inputs.env_type }}" \
-            -var="env_number=${{ inputs.env_number }}" \
-            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -auto-approve \
             tfplan
 

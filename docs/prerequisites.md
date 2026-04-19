@@ -110,7 +110,7 @@ To run this automation on GCP successfully, make sure you have completed all the
     GITHUB_REPO="multi-cloud-k8s"
     ROLE_NAME="github-actions-eks-role"
     REGION="eu-west-1"
-    BUCKET="github-k8s-terraform-state"    
+    BUCKET_NAME="github-k8s-terraform-state"    
     ```
 2. Create OIDC Provider:
     ```bash
@@ -179,9 +179,8 @@ To run this automation on GCP successfully, make sure you have completed all the
     AWS_REGION=$REGION
     AWS_ROLE_ARN=$(aws iam get-role --role-name $ROLE_NAME --query Role.Arn --output text)
     AWS_TF_STATE_BUCKET=$BUCKET_NAME
-    BUCKET="github-k8s-terraform-state"
     ```
-20. Create bucket to store the state files.
+7. Create bucket to store the state files.
     ```bash
-    aws s3 mb --region eu-west-1 s3://github-k8s-terraform-state
+    aws s3 mb --region $REGION s3://$BUCKET_NAME
     ```
