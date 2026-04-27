@@ -42,10 +42,24 @@ variable "private_cluster" {
   default     = false
 }
 
-variable "azs" {
-  description = "A list of availability zones names or ids in the region"
+variable "azs_masters" {
+  description = "A list of availability zones names or (ids in the region) to be used by the control plane"
   type        = list(string)
   default     = []
+  validation {
+    condition     = length(var.azs_masters) >= 2
+    error_message = "The EKS control plane requires at least 2 availability zones for high availability."
+  }
+}
+
+variable "azs_workers" {
+  description = "A list of availability zones names or (ids in the region) to be used by the data plane"
+  type        = list(string)
+  default     = []
+  validation {
+    condition     = length(var.azs_workers) >= 1
+    error_message = "The EKS data plane requires at least 1 availability zone."
+  }
 }
 
 variable "kubernetes_version" {
@@ -62,7 +76,7 @@ variable "vpc_cidr" {
 
 variable "region" {
   description = "AWS region"
-  type        = string  
+  type        = string
 }
 # -------------------------------------------------------------------
 # EKS Worker node configuration

@@ -9,16 +9,19 @@ module "vpc" {
   name = local.env_name
   cidr = var.vpc_cidr
 
-  azs             = var.azs
+  azs             = local.azs
   public_subnets  = local.public_subnets
   private_subnets = local.private_subnets
   #public_subnet_suffix  = "SubnetPublic"
   #private_subnet_suffix = "SubnetPrivate"
 
-  enable_nat_gateway   = false
-  create_igw           = true
+  enable_nat_gateway = var.private_cluster ? false : true
+  single_nat_gateway = true
+  create_igw         = var.private_cluster ? false : true
+
+  enable_dns_support   = true
   enable_dns_hostnames = true
-  single_nat_gateway   = true
+
 
   # Manage so we can name
   manage_default_network_acl    = false
@@ -28,13 +31,13 @@ module "vpc" {
   manage_default_security_group = false
   default_security_group_tags   = { Name = "${local.cluster_name}-default" }
 
-  public_subnet_tags = merge(local.tags, {
-    "kubernetes.io/role/elb" = "1"
-  })
-  private_subnet_tags = merge(local.tags, {
-    "karpenter.sh/discovery"          = local.cluster_name
+  #public_subnet_tags = {
+  #  "kubernetes.io/role/elb" = "1"
+  #}
+  private_subnet_tags = {
+    #"karpenter.sh/discovery"          = local.cluster_name
     "kubernetes.io/role/internal-elb" = "1"
-  })
+  }
 
-  tags = local.tags
+  #tags = local.tags
 }
