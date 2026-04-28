@@ -16,7 +16,12 @@ module "vpc_endpoints" {
     }
   } : {}
 
-  endpoints = var.private_cluster ? {
+endpoints = { for k, v in local.endpoints : k => v if var.private_cluster }
+
+}
+
+locals {
+  endpoints = {
     s3 = {
       service         = "s3"
       service_type    = "Gateway"
@@ -58,5 +63,5 @@ module "vpc_endpoints" {
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-  } : {}
+  }  
 }

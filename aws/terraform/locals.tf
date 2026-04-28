@@ -16,7 +16,8 @@ locals {
 
   #azs             = slice(data.aws_availability_zones.available.names, 0, 3)
   #public_subnets  = var.private_cluster ? [] : [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 6)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
+  #private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
+  private_subnets = [for k in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
 }
 
 #locals {
