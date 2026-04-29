@@ -4,7 +4,10 @@
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
-infra.tf
+
+# Ignore plan files
+*.tfplan
+*tfplan*
 
 # Terraform variable files (DO NOT COMMIT)
 terraform.tfvars
@@ -13,3 +16,5 @@ terraform.tfvars
 # Sensitive files
 *.pem
 *.key
+infra.*
+test
