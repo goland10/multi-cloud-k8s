@@ -34,7 +34,7 @@ azs_workers = ["eu-west-1a","eu-west-1b","eu-west-1c"]  # 1 AZ for single-node c
 # -------------------------------------------------------------------
 # EKS Worker node configuration
 # -------------------------------------------------------------------
-instance_types           = ["t3.small"]
+instance_types           = ["t3.small"]    # t3.medium for dev (minimum for testing), t3.large or m5.large for prod
 min_size     = 2
 max_size     = 6
 desired_size = 2

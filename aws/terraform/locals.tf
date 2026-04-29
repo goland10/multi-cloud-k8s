@@ -14,9 +14,7 @@ locals {
   # Slice the available names from 0 to that maximum count
   azs = slice(data.aws_availability_zones.available.names, 0, local.max_az_count)
 
-  #azs             = slice(data.aws_availability_zones.available.names, 0, 3)
   public_subnets  = var.private_cluster ? [] : [for i, v in local.azs : cidrsubnet(var.vpc_cidr, 8, i + 6)] 
-  #private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
   private_subnets = [for i, v in local.azs : cidrsubnet(var.vpc_cidr, 8, i)]
 }
 
