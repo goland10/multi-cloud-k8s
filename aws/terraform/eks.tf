@@ -5,7 +5,7 @@ module "eks" {
   name                                     = local.cluster_name
   kubernetes_version                       = var.kubernetes_version
   endpoint_private_access                  = true
-  endpoint_public_access                   = true
+  endpoint_public_access                   = var.private_cluster ? false : true
   enable_cluster_creator_admin_permissions = true
 
   addons = {
@@ -14,9 +14,8 @@ module "eks" {
       most_recent    = true
       configuration_values = jsonencode({
         env = {
-          ENABLE_POD_ENI                    = "true"
-          ENABLE_PREFIX_DELEGATION          = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+          ENABLE_POD_ENI                    = "false"   # Default=false. "true" means "Security Groups for Pods" and it doesn't work with instance type "t3.small"
+          ENABLE_PREFIX_DELEGATION          = "true"    # Default=false. AWS assigns a CIDR block (prefix) to each worker node an it manages them locally.
         }
         nodeAgent = {
           enablePolicyEventLogs = "true"
@@ -36,7 +35,7 @@ module "eks" {
   create_node_security_group = true # default = true
 
   timeouts = {
-    create = "10m"
+    create = "15m"
   }
 
   eks_managed_node_groups = {

@@ -10,13 +10,13 @@ module "vpc" {
   cidr = var.vpc_cidr
 
   azs             = local.azs
-  #public_subnets  = local.public_subnets
+  public_subnets  = local.public_subnets
   private_subnets = local.private_subnets
   #public_subnet_suffix  = "SubnetPublic"
   #private_subnet_suffix = "SubnetPrivate"
 
   enable_nat_gateway = var.private_cluster ? false : true
-  single_nat_gateway = true
+  single_nat_gateway = var.private_cluster ? false : true
   create_igw         = var.private_cluster ? false : true
 
   enable_dns_support   = true
