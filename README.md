@@ -3,13 +3,17 @@
 This project demonstrates a production-style deployment of Kubernetes on AWS/GCP, built using Github Actions, Terraform and security best practices.
 The automation is intended to be used by dev/staging/prod teams to deploy k8s clusters with a single click.
 
-## Prerequisits:
+## Prerequisits
 * [GCP prerequisits](docs/prerequisites.md#gcp)
 * [AWS prerequisits](docs/prerequisites.md#aws)
 
-## Architecture
-* [AWS public endpoints access](./docs/aws_public_endpoints_access.drawio.png)
-* [AWS private endpoints access](./docs/aws_private_endpoints_access.drawio.png)
+## Architecture Diagrams
+* [AWS (temporary) README.md](./docs/aws_temp_README.md)
+
+* [AWS public endpoints access diagram](./docs/aws_public_endpoints_access.drawio.png)
+* [AWS private endpoints access diagram](./docs/aws_private_endpoints_access.drawio.png)
+
+
 
 ## Github Actions workflows
 1. Terraform K8S Deploy -- K8S cluster creation using Terrarorm [more details](./docs/k8s_create.md)

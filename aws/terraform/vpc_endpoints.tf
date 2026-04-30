@@ -16,7 +16,7 @@ module "vpc_endpoints" {
     }
   } : {}
 
-endpoints = { for k, v in local.endpoints : k => v if var.private_cluster }
+  endpoints = { for k, v in local.endpoints : k => v if var.private_cluster }
 
 }
 
@@ -63,5 +63,5 @@ locals {
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-  }  
+  }
 }

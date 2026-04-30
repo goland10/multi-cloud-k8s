@@ -1,9 +1,9 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
-env_type = "dev"
+env_type = "prod"
 env_number = 01
-#env_name = "dev-01"
+#env_name = "prod-01"
 
 region = "eu-west-1"
 
@@ -16,7 +16,7 @@ owner = "yaniv"
 # Network
 # -------------------------------------------------------------------
 #vpc           = "dev-01"
-vpc_cidr    = "10.10.0.0/16"    #This is the base cidr
+vpc_cidr    = "10.11.0.0/16"    #This is the base cidr
 
 # -------------------------------------------------------------------
 # IAM (node role)
@@ -27,7 +27,7 @@ vpc_cidr    = "10.10.0.0/16"    #This is the base cidr
 # -------------------------------------------------------------------
 # Control plain node location
 azs_masters = ["eu-west-1a", "eu-west-1b"]              #At least 2 AZs
-private_cluster = false
+private_cluster = true
 
 # Worker node location
 azs_workers = ["eu-west-1a","eu-west-1b","eu-west-1c"]  # 1 AZ for single-node cluster, 2 AZs for dual-zone cluster, 3 AZs for multi-zone cluster
