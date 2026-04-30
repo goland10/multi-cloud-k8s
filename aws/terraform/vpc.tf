@@ -12,8 +12,6 @@ module "vpc" {
   azs             = local.azs
   public_subnets  = local.public_subnets
   private_subnets = local.private_subnets
-  #public_subnet_suffix  = "SubnetPublic"
-  #private_subnet_suffix = "SubnetPrivate"
 
   enable_nat_gateway = var.private_cluster ? false : true
   single_nat_gateway = var.private_cluster ? false : true
@@ -34,6 +32,7 @@ module "vpc" {
   #public_subnet_tags = {
   #  "kubernetes.io/role/elb" = "1"
   #}
+
   private_subnet_tags = {
     #"karpenter.sh/discovery"          = local.cluster_name
     "kubernetes.io/role/internal-elb" = "1"

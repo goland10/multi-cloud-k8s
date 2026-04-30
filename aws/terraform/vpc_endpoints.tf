@@ -22,42 +22,47 @@ module "vpc_endpoints" {
 
 locals {
   endpoints = {
-    s3 = {
+    #Pulls container images stored in ECR (image layers are kept in S3).
+    s3 = {  
       service         = "s3"
       service_type    = "Gateway"
       route_table_ids = module.vpc.private_route_table_ids
     }
-
+    #Allows the kubelet and nodes to call the ECR control-plane API (DescribeRepositories, GetAuthorizationToken, etc.) to authenticate before pulling images.
     ecr_api = {
       service             = "ecr.api"
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-
+    #Gets the image manifest (list of layer digests and metadata) from ecr.dkr
     ecr_dkr = {
       service             = "ecr.dkr"
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-
+    #Issues temporary AWS credentials via IRSA (IAM Roles for Service Accounts). 
+    #Pods that assume an IAM role call STS to exchange their OIDC token for short-lived credentials.
     sts = {
       service             = "sts"
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-
+    #Used by the EKS control plane and node bootstrap process to describe instances, manage network interfaces (ENIs), 
+    #and allocate IPs under VPC-CNI Prefix Delegation.
     ec2 = {
       service             = "ec2"
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-
+    #Enables nodes and internal tooling to reach the EKS API without going over the public internet. 
+    #Required for the node bootstrap process to register with the control plane.
     eks = {
       service             = "eks"
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-
+    #Routes CloudWatch Logs traffic (control-plane logs, node agent logs, application logs shipped via Fluent Bit or the CloudWatch agent) 
+    #to CloudWatch without leaving the VPC.
     logs = {
       service             = "logs"
       subnet_ids          = module.vpc.private_subnets
