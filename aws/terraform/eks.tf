@@ -10,12 +10,12 @@ module "eks" {
 
   addons = {
     vpc-cni = {
-      before_compute = true # vpc-cni must be deployed before worker nodes
+      before_compute = true # vpc-cni must be deployed before worker nodes because of the Prefix Delegation
       most_recent    = true
       configuration_values = jsonencode({
         env = {
           #ENABLE_POD_ENI                    = "false"  # Default=false. "true" means "Security Groups for Pods" and it doesn't work with instance type "t3.small"
-          ENABLE_PREFIX_DELEGATION          = "true"    # Increase pod density per node to 110. Default=false. AWS assigns a CIDR block (prefix) to each worker node an it manages them locally. 
+          ENABLE_PREFIX_DELEGATION          = "true"    # Increase pod density per node to 110 and speed up pod ip address assignment. Default=false. AWS assigns a CIDR block (prefix) to each worker node an it manages them locally. 
         }
         nodeAgent = {
           enablePolicyEventLogs = "true"

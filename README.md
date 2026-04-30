@@ -7,6 +7,10 @@ The automation is intended to be used by dev/staging/prod teams to deploy k8s cl
 * [GCP prerequisits](docs/prerequisites.md#gcp)
 * [AWS prerequisits](docs/prerequisites.md#aws)
 
+## Architecture
+* [AWS public endpoints access](./docs/aws_public_endpoints_access.drawio.png)
+* [AWS private endpoints access](./docs/aws_private_endpoints_access.drawio.png)
+
 ## Github Actions workflows
 1. Terraform K8S Deploy -- K8S cluster creation using Terrarorm [more details](./docs/k8s_create.md)
 2. Terraform K8S Destroy -- K8S cluster destruction using Terrarorm [more details](./docs/k8s_destroy.md)
