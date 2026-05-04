@@ -43,22 +43,23 @@ variable "private_cluster" {
 }
 
 variable "azs_masters" {
-  description = "A list of availability zones names or (ids in the region) to be used by the control plane"
+  description = "A list of availability zones names or (ids in the region) to be used by the NAT gateway"
   type        = list(string)
   default     = []
-  validation {
-    condition     = length(var.azs_masters) >= 2
-    error_message = "The EKS control plane requires at least 2 availability zones for high availability."
-  }
+
+#  validation {
+#    condition     = length(var.azs_masters) >= 2
+#    error_message = "The EKS control plane requires at least 2 availability zones for high availability."
+#  }
 }
 
 variable "azs_workers" {
   description = "A list of availability zones names or (ids in the region) to be used by the data plane"
   type        = list(string)
-  default     = []
+  #default     = []
   validation {
-    condition     = length(var.azs_workers) >= 1
-    error_message = "The EKS data plane requires at least 1 availability zone."
+    condition     = length(var.azs_workers) >= 2
+    error_message = "The EKS requires at least 2 availability zone."
   }
 }
 

@@ -72,6 +72,8 @@ module "eks" {
   #  }
 }
 
+# Prefix delegation process (ENABLE_PREFIX_DELEGATION = "true") takes time so we need the 60 seconds delay to let the prefix delegation complete successfully and 
+#assign coredns and metrics_server a warmed up ip address.
 # Create the delay mechanism
 resource "time_sleep" "wait_for_networking" {
   create_duration = "60s"

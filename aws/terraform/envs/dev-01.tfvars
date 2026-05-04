@@ -26,11 +26,11 @@ vpc_cidr    = "10.10.0.0/16"    #This is the base cidr
 # Location
 # -------------------------------------------------------------------
 # Control plain node location
-azs_masters = ["eu-west-1a", "eu-west-1b"]              #At least 2 AZs
-private_cluster = false
+#azs_masters = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]               
+private_cluster = true
 
 # Worker node location
-azs_workers = ["eu-west-1a","eu-west-1b","eu-west-1c"]  # 1 AZ for single-node cluster, 2 AZs for dual-zone cluster, 3 AZs for multi-zone cluster
+azs_workers = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 AZs. required.
 # -------------------------------------------------------------------
 # EKS Worker node configuration
 # -------------------------------------------------------------------
