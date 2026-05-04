@@ -10,7 +10,7 @@ module "vpc" {
   private_subnets = local.private_subnets
 
   enable_nat_gateway = var.private_cluster ? false : true
-  single_nat_gateway = var.private_cluster ? false : true
+  single_nat_gateway = var.single_nat_gateway
   create_igw         = var.private_cluster ? false : true
 
   enable_dns_support   = true

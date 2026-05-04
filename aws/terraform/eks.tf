@@ -24,14 +24,6 @@ module "eks" {
       })
     }
     kube-proxy = {}
-    #    coredns        = {
-    #      resolve_conflicts_on_create = "OVERWRITE"
-    #      resolve_conflicts_on_update = "OVERWRITE"
-    #    }
-    #    metrics-server = {
-    #      resolve_conflicts_on_create = "OVERWRITE"
-    #      resolve_conflicts_on_update = "OVERWRITE"          
-    #    }
   }
 
   vpc_id     = module.vpc.vpc_id
@@ -73,7 +65,7 @@ module "eks" {
 }
 
 # Prefix delegation process (ENABLE_PREFIX_DELEGATION = "true") takes time so we need the 60 seconds delay to let the prefix delegation complete successfully and 
-#assign coredns and metrics_server a warmed up ip address.
+# assign coredns and metrics_server a warmed up ip addresses.
 # Create the delay mechanism
 resource "time_sleep" "wait_for_networking" {
   create_duration = "60s"

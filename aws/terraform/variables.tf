@@ -42,23 +42,28 @@ variable "private_cluster" {
   default     = false
 }
 
-variable "azs_masters" {
+variable "azs_public_subnets" {
   description = "A list of availability zones names or (ids in the region) to be used by the NAT gateway"
   type        = list(string)
   default     = []
 
 #  validation {
-#    condition     = length(var.azs_masters) >= 2
+#    condition     = length(var.azs_public_subnets) >= 2
 #    error_message = "The EKS control plane requires at least 2 availability zones for high availability."
 #  }
 }
 
-variable "azs_workers" {
+variable "single_nat_gateway" {
+  default = "1 NAT gateway for the whole region or 1 NAT gateway for each AZ."
+  type = bool
+}
+
+variable "azs_private_subnets" {
   description = "A list of availability zones names or (ids in the region) to be used by the data plane"
   type        = list(string)
   #default     = []
   validation {
-    condition     = length(var.azs_workers) >= 2
+    condition     = length(var.azs_private_subnets) >= 2
     error_message = "The EKS requires at least 2 availability zone."
   }
 }

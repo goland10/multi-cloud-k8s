@@ -18,7 +18,7 @@ resource "terraform_data" "validate_azs" {
     precondition {
       # The logic remains the same: Check if all requested AZs exist in AWS
       condition = alltrue([
-        for az in distinct(concat(var.azs_masters, var.azs_workers)) : 
+        for az in distinct(concat(var.azs_public_subnets, var.azs_private_subnets)) : 
         contains(data.aws_availability_zones.available.names, az)
       ])
       
@@ -27,7 +27,7 @@ resource "terraform_data" "validate_azs" {
       CRITICAL ERROR: Invalid Availability Zone configuration.
       
       The following AZs are NOT valid in ${var.region}:
-      ${join(", ", [for az in distinct(concat(var.azs_masters, var.azs_workers)) : az if !contains(data.aws_availability_zones.available.names, az)])}
+      ${join(", ", [for az in distinct(concat(var.azs_public_subnets, var.azs_private_subnets)) : az if !contains(data.aws_availability_zones.available.names, az)])}
       
       Please choose from the available zones in this region:
       ${join(", ", data.aws_availability_zones.available.names)}
@@ -37,17 +37,11 @@ resource "terraform_data" "validate_azs" {
 }
 
 locals {
-  # Determine the maximum count between the two lists
-  #max_az_count = max(length(var.azs_masters), length(var.azs_workers))
-
-  # Slice the available names from 0 to that maximum count
-  #azs = slice(data.aws_availability_zones.available.names, 0, local.max_az_count)
-
   # Combine and get unique list of all required AZs
-  azs = distinct(concat(var.azs_masters, var.azs_workers))
+  azs = distinct(concat(var.azs_public_subnets, var.azs_private_subnets))
 
-  public_subnets  = var.private_cluster ? [] : [for i, v in var.azs_masters : cidrsubnet(var.vpc_cidr, 8, i + 6)]   #Create public subnets for NAT gateway
-  private_subnets = [for i, v in var.azs_workers : cidrsubnet(var.vpc_cidr, 8, i)]                                  #Always create private subnets
+  public_subnets  = var.private_cluster ? [] : [for i, v in var.azs_public_subnets : cidrsubnet(var.vpc_cidr, 8, i + 6)]   #Create public subnets for NAT gateway
+  private_subnets = [for i, v in var.azs_private_subnets : cidrsubnet(var.vpc_cidr, 8, i)]                                  #Always create private subnets
 }
 
 #locals {

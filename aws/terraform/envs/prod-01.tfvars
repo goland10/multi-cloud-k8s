@@ -25,12 +25,16 @@ vpc_cidr    = "10.11.0.0/16"    #This is the base cidr
 # -------------------------------------------------------------------
 # Location
 # -------------------------------------------------------------------
-# Control plain node location
-azs_masters = ["eu-west-1a", "eu-west-1b"]              #At least 2 AZs
+# AZs for NAT gateway/s. Only for public setup!
+#azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]       
+
+# Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true)
+single_nat_gateway = false         
 private_cluster = true
 
 # Worker node location
-azs_workers = ["eu-west-1a","eu-west-1b","eu-west-1c"]  # 1 AZ for single-node cluster, 2 AZs for dual-zone cluster, 3 AZs for multi-zone cluster
+azs_private_subnets = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 AZs required.
+
 # -------------------------------------------------------------------
 # EKS Worker node configuration
 # -------------------------------------------------------------------
