@@ -18,3 +18,4 @@ terraform.tfvars
 *.key
 infra.*
 test
+gitignore/
