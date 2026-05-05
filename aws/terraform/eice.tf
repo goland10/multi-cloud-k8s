@@ -22,7 +22,7 @@ resource "aws_vpc_security_group_egress_rule" "eic_to_vpc_ssh" {
 resource "aws_ec2_instance_connect_endpoint" "this" {
   # Placing it in your first private subnet
   subnet_id = module.vpc.private_subnets[0]
-  
+
   security_group_ids = [aws_security_group.eic_endpoint_sg.id]
 
   # Optional: You can preserve the client IP, but for a private bastion, the default (false) is usually fine.
@@ -38,9 +38,9 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_from_eic" {
 
   # Link it specifically to the EIC Endpoint's Security Group
   referenced_security_group_id = aws_security_group.eic_endpoint_sg.id
-  
+
   from_port   = 22
   ip_protocol = "tcp"
   to_port     = 22
-  description = "Allow SSH traffic from the EIC Endpoint"
+  description = "Allow the bastion SSH traffic from the EIC Endpoint"
 }

@@ -1,3 +1,6 @@
+#########################################
+# Bastion security group
+#########################################
 resource "aws_security_group" "bastion_sg" {
   name        = "${local.cluster_name}-bastion-sg"
   description = "Security group for private bastion host"
@@ -16,6 +19,9 @@ resource "aws_vpc_security_group_egress_rule" "bastion_allow_all_outbound" {
   description = "Allow all outbound traffic for updates and API communication"
 }
 
+#########################################
+# Cluster security group
+#########################################
 resource "aws_vpc_security_group_ingress_rule" "allow_bastion_to_eks" {
   security_group_id = module.eks.cluster_primary_security_group_id
 
@@ -26,6 +32,9 @@ resource "aws_vpc_security_group_ingress_rule" "allow_bastion_to_eks" {
   description                  = "Allow Bastion host to communicate with EKS API server"
 }
 
+#########################################
+# Bastion IAM
+#########################################
 resource "aws_iam_role" "bastion_role" {
   name = "${local.cluster_name}-bastion-role"
 
@@ -51,6 +60,55 @@ resource "aws_iam_instance_profile" "bastion_profile" {
   role = aws_iam_role.bastion_role.name
 }
 
+resource "aws_iam_policy" "bastion_eks_access" {
+  name        = "${local.cluster_name}-bastion-eks-policy"
+  description = "Allow bastion to describe the EKS cluster"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters"
+        ]
+        Effect   = "Allow"
+        Resource = module.eks.cluster_arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "bastion_eks" {
+  policy_arn = aws_iam_policy.bastion_eks_access.arn
+  role       = aws_iam_role.bastion_role.name
+}
+
+resource "aws_iam_role_policy" "bastion_s3_pull" {
+  name = "${local.cluster_name}-bastion-s3-pull"
+  role = aws_iam_role.bastion_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::amazon-eks",
+          "arn:aws:s3:::amazon-eks/*"
+        ]
+      }
+    ]
+  })
+}
+
+#########################################
+# Bastion Instance
+#########################################
 data "aws_ssm_parameter" "al2023_ami" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
 }
@@ -78,45 +136,4 @@ resource "aws_instance" "bastion" {
   }
 }
 
-resource "aws_iam_policy" "bastion_eks_access" {
-  name        = "${local.cluster_name}-bastion-eks-policy"
-  description = "Allow bastion to describe the EKS cluster"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = "eks:DescribeCluster"
-        Effect   = "Allow"
-        Resource = module.eks.cluster_arn
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "bastion_eks" {
-  policy_arn = aws_iam_policy.bastion_eks_access.arn
-  role       = aws_iam_role.bastion_role.name
-}
-
-resource "aws_iam_role_policy" "bastion_s3_pull" {
-  name = "${local.cluster_name}-bastion-s3-pull"
-  role = aws_iam_role.bastion_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = [
-          "s3:GetObject",
-          "s3:ListBucket"
-        ]
-        Resource = [
-          "arn:aws:s3:::amazon-eks",
-          "arn:aws:s3:::amazon-eks/*"
-        ]
-      }
-    ]
-  })
-}

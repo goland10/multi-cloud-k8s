@@ -184,3 +184,13 @@ To run this automation on GCP successfully, make sure you have completed all the
     ```bash
     aws s3 mb --region $REGION s3://$BUCKET_NAME
     ```
+## For AWS private setup
+
+1. Create bucket for the tools (kubectl, helm)
+   ```bash
+   aws s3 mb --region $REGION s3://tools-goland10
+   ```
+2. Upload the tools files
+    ```bash
+    aws s3 cp kubectl.xz s3://tools-goland10
+    ```

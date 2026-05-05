@@ -7,7 +7,18 @@ output "private_subnets" {
 }
 
 output "public_eks_endpoint" {
-  value = module.eks.cluster_endpoint
+  value = var.private_cluster ? null : module.eks.cluster_endpoint
+}
+
+output "bastion_connection_command" {
+  value = var.private_cluster ? (
+    <<EOT
+    ec2-instance-connect ssh \
+    --os-user ec2-user \
+    --connection-type eice \
+    --instance-id ${aws_instance.bastion.id}
+    EOT
+  ) : null
 }
 
 output "connection_command" {

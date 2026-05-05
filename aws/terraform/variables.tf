@@ -47,15 +47,15 @@ variable "azs_public_subnets" {
   type        = list(string)
   default     = []
 
-#  validation {
-#    condition     = length(var.azs_public_subnets) >= 2
-#    error_message = "The EKS control plane requires at least 2 availability zones for high availability."
-#  }
+  #  validation {
+  #    condition     = length(var.azs_public_subnets) >= 2
+  #    error_message = "The EKS control plane requires at least 2 availability zones for high availability."
+  #  }
 }
 
 variable "single_nat_gateway" {
-  default = "1 NAT gateway for the whole region or 1 NAT gateway for each AZ."
-  type = bool
+  description = "1 NAT gateway for the whole region or 1 NAT gateway for each AZ."
+  type        = bool
 }
 
 variable "azs_private_subnets" {

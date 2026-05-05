@@ -39,9 +39,9 @@ azs_private_subnets = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 A
 # EKS Worker node configuration
 # -------------------------------------------------------------------
 instance_types = ["t3.small"]    # t3.medium for dev (minimum for testing), t3.large or m5.large for prod
-min_size     = 2
+min_size     = 3
 max_size     = 6
-desired_size = 2
+desired_size = 3
 
 # -------------------------------------------------------------------
 # EKS cluster behavior

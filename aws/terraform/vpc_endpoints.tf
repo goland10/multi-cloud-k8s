@@ -24,16 +24,16 @@ locals {
   endpoints = {
     #Pulls container images stored in ECR (image layers are kept in S3).
     s3_gateway = {
-        service         = "s3"
-        service_type    = "Gateway"
-        route_table_ids = module.vpc.private_route_table_ids
-        tags            = { Name = "s3-gateway" }
-      }    
-    s3 = {  
       service         = "s3"
+      service_type    = "Gateway"
+      route_table_ids = module.vpc.private_route_table_ids
+      tags            = { Name = "s3-gateway" }
+    }
+    s3 = {
+      service             = "s3"
       subnet_ids          = module.vpc.private_subnets
-      private_dns_enabled = true      
-      service_type    = "Interface"
+      private_dns_enabled = true
+      service_type        = "Interface"
       tags                = { Name = "s3-interface" }
     }
     #Allows the kubelet and nodes to call the ECR control-plane API (DescribeRepositories, GetAuthorizationToken, etc.) to authenticate before pulling images.
@@ -76,20 +76,20 @@ locals {
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-#    ssm = {
-#      service             = "ssm"
-#      subnet_ids          = module.vpc.private_subnets
-#      private_dns_enabled = true
-#    }
-#    ssmmessages = {
-#      service             = "ssmmessages"
-#      subnet_ids          = module.vpc.private_subnets
-#      private_dns_enabled = true
-#    }
-#    ec2messages = {
-#      service             = "ec2messages"
-#      subnet_ids          = module.vpc.private_subnets
-#      private_dns_enabled = true
-#    }    
+    #    ssm = {
+    #      service             = "ssm"
+    #      subnet_ids          = module.vpc.private_subnets
+    #      private_dns_enabled = true
+    #    }
+    #    ssmmessages = {
+    #      service             = "ssmmessages"
+    #      subnet_ids          = module.vpc.private_subnets
+    #      private_dns_enabled = true
+    #    }
+    #    ec2messages = {
+    #      service             = "ec2messages"
+    #      subnet_ids          = module.vpc.private_subnets
+    #      private_dns_enabled = true
+    #    }    
   }
 }
