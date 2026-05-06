@@ -29,8 +29,8 @@ vpc_cidr    = "10.10.0.0/16"    #This is the base cidr
 azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]       
 
 # Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true)
-single_nat_gateway = false         
-private_cluster = true
+single_nat_gateway = true         
+private_cluster = false
 
 # Worker node location
 azs_private_subnets = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 AZs required.
@@ -39,14 +39,14 @@ azs_private_subnets = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 A
 # EKS Worker node configuration
 # -------------------------------------------------------------------
 instance_types = ["t3.small"]    # t3.medium for dev (minimum for testing), t3.large or m5.large for prod
-min_size     = 3
-max_size     = 6
-desired_size = 3
+min_size     = 1
+max_size     = 3
+desired_size = 1
 
 # -------------------------------------------------------------------
 # EKS cluster behavior
 # -------------------------------------------------------------------
-kubernetes_version = "1.35"
+kubernetes_version = "1.34"
 
 #deletion_protection = false
 

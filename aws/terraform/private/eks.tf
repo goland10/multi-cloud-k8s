@@ -7,7 +7,7 @@ module "eks" {
   endpoint_private_access                  = true
   endpoint_public_access                   = var.private_cluster ? false : true
   enable_cluster_creator_admin_permissions = true
-  access_entries = {
+  access_entries = var.private_cluster ? {
     # This entry links your bastion role to Cluster Admin rights
     bastion_admin = {
       principal_arn = aws_iam_role.bastion_role.arn  # Your existing bastion role
@@ -18,7 +18,8 @@ module "eks" {
         }
       }
     }
-  }
+  } : {}
+
   addons = {
     vpc-cni = {
       before_compute = true # vpc-cni must be deployed before worker nodes because of the Prefix Delegation
