@@ -8,5 +8,5 @@ output "public_eks_endpoint" {
 
 output "connection_command" {
   description = "Run this command to connect to the cluster public endpoint"
-  value       = "eksctl utils write-kubeconfig --cluster ${module.eks.cluster_name} --region ${var.region}"
+  value = "aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.region}"
 }
