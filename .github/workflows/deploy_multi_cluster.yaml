@@ -107,7 +107,7 @@ jobs:
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -var="private_cluster=false"
+            -var="private_cluster=false" \
             -out=tfplan
 
       - name: Stop workflow
