@@ -183,11 +183,16 @@ To run this automation on GCP successfully, make sure you have completed all the
       --policy-name k8sDeploy-S3   \
       --description "Allows GitHub Actions to create and manage state on S3" \
       --policy-document file://S3.json
+
+    aws iam create-policy \
+      --policy-name k8sDeploy-SSM  \
+      --description "Allows GitHub Actions to read AWS public EKS AMI SSM parameters"   \
+      --policy-document file://SSM.json
     ```
 
 5. Attach all policies to the role
     ```bash
-    for POLICY in EKS EC2VPC IAM S3 KMS CloudWatchLogs; 
+    for POLICY in CloudWatchLogs EC2VPC EKS IAM KMS S3 SSM  ; 
     do
     aws iam attach-role-policy --role-name ${ROLE_NAME} --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/k8sDeploy-${POLICY}; 
     done

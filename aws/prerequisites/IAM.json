@@ -40,7 +40,9 @@
         "iam:GetOpenIDConnectProvider",
         "iam:TagOpenIDConnectProvider",
         "iam:CreateServiceLinkedRole",
-        "iam:ListOpenIDConnectProviders"
+        "iam:ListOpenIDConnectProviders",
+        "iam:TagPolicy",
+        "iam:UntagPolicy"
       ],
       "Resource": "*"
     }

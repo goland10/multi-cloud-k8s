@@ -72,7 +72,8 @@
         "ec2:DescribeManagedPrefixLists",
         "ec2:DescribeFlowLogs",
         "ec2:DescribeVpcEndpoints",
-        "ec2:DescribeVpcEndpointServices"
+        "ec2:DescribeVpcEndpointServices",
+        "ec2:DisassociateAddress"
       ],
       "Resource": "*"
     }
