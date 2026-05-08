@@ -1,0 +1,25 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "KMSPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:DescribeKey",
+        "kms:EnableKeyRotation",
+        "kms:GetKeyPolicy",
+        "kms:GetKeyRotationStatus",
+        "kms:ListResourceTags",
+        "kms:PutKeyPolicy",
+        "kms:ScheduleKeyDeletion",
+        "kms:TagResource",
+        "kms:UntagResource",
+        "kms:CreateAlias",
+        "kms:DeleteAlias",
+        "kms:ListAliases"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

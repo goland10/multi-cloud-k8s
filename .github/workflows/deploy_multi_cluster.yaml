@@ -223,24 +223,34 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan
+
+      - name: Terraform Destroy
         run: |
-          terraform plan \
+          terraform destroy \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -out=tfplan
+            -auto-approve
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: |
-          terraform apply \
-            -var="env_type=${{ inputs.env_type }}" \
-            -var="env_number=${{ inputs.env_number }}" \
-            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -auto-approve \
-            tfplan
+#      - name: Terraform Plan
+#        run: |
+#          terraform plan \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -out=tfplan
+#
+#      - name: Terraform Apply
+#        if: github.ref == 'refs/heads/main'
+#        run: |
+#          terraform apply \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -auto-approve \
+#            tfplan
 
+#################################################################################################
 
 #name: Multi-cluster K8S Deploy
 #

@@ -174,6 +174,42 @@ To run this automation on GCP successfully, make sure you have completed all the
       --role-name $ROLE_NAME \
       --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
     ```  
+6. Create policy for CloudWatchLogs operations and attach it to the role
+    ```bash
+    aws iam create-policy \
+      --policy-name CloudWatchLogs \
+      --description "Allows GitHub Actions to create and manage CloudWatch Log Groups for EKS" \
+      --policy-document file://cloudwatchlogs-policy.json
+
+    aws iam attach-role-policy \
+      --role-name github-actions-eks-role \
+      --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/CloudWatchLogs
+    ```
+
+7. Create policy for KMS operations and attach it to the role
+    ```bash
+    aws iam create-policy \
+      --policy-name DeployEKS-KMSPolicy \
+      --description "Allows GitHub Actions to create and manage KMS keys for EKS" \
+      --policy-document file://kms-policy.json
+
+    aws iam attach-role-policy \
+      --role-name github-actions-eks-role \
+      --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/DeployEKS-KMSPolicy
+    ```
+
+8. Create policy for EKS operations and attach it to the role
+    ```bash
+    aws iam create-policy \
+      --policy-name GitHubActionsManageEKS \
+      --description "Allows GitHub Actions to create and manage EKS clusters" \
+      --policy-document file://eks-policy.json
+
+    aws iam attach-role-policy \
+      --role-name github-actions-eks-role \
+      --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/GitHubActionsManageEKS
+    ```
+
 6. Set GitHub repo variables
     ```
     AWS_REGION=$REGION
