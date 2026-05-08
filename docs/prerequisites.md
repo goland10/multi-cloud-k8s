@@ -152,64 +152,46 @@ To run this automation on GCP successfully, make sure you have completed all the
       --assume-role-policy-document file://./trust-policy.json \
       --description "GitHub Actions role for EKS Terraform deployments"
     ```
-5. Attach permissions the role needs
-    ```bash
-    # EKS
-    aws iam attach-role-policy \
-      --role-name $ROLE_NAME \
-      --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-
-    # EC2 (VPC, subnets, security groups)
-    aws iam attach-role-policy \
-      --role-name $ROLE_NAME \
-      --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
-
-    # IAM (Terraform needs to create roles for EKS node groups)
-    aws iam attach-role-policy \
-      --role-name $ROLE_NAME \
-      --policy-arn arn:aws:iam::aws:policy/IAMFullAccess
-
-    # S3 (Terraform remote state)
-    aws iam attach-role-policy \
-      --role-name $ROLE_NAME \
-      --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
-    ```  
-6. Create policy for CloudWatchLogs operations and attach it to the role
+5. Create policies
     ```bash
     aws iam create-policy \
-      --policy-name CloudWatchLogs \
+      --policy-name k8sDeploy-CloudWatchLogs \
       --description "Allows GitHub Actions to create and manage CloudWatch Log Groups for EKS" \
-      --policy-document file://cloudwatchlogs-policy.json
+      --policy-document file://CloudWatchLogs.json
 
-    aws iam attach-role-policy \
-      --role-name github-actions-eks-role \
-      --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/CloudWatchLogs
-    ```
-
-7. Create policy for KMS operations and attach it to the role
-    ```bash
     aws iam create-policy \
-      --policy-name DeployEKS-KMSPolicy \
-      --description "Allows GitHub Actions to create and manage KMS keys for EKS" \
-      --policy-document file://kms-policy.json
+      --policy-name k8sDeploy-EC2VPC \
+      --description "Allows GitHub Actions to create and manage EC2 & VPC" \
+      --policy-document file://EC2VPC.json
 
-    aws iam attach-role-policy \
-      --role-name github-actions-eks-role \
-      --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/DeployEKS-KMSPolicy
-    ```
-
-8. Create policy for EKS operations and attach it to the role
-    ```bash
     aws iam create-policy \
-      --policy-name GitHubActionsManageEKS \
-      --description "Allows GitHub Actions to create and manage EKS clusters" \
-      --policy-document file://eks-policy.json
+      --policy-name k8sDeploy-EKS \           
+      --description "Allows GitHub Actions to create and manage EKS clusters" \                                                      
+      --policy-document file://EKS.json
 
-    aws iam attach-role-policy \
-      --role-name github-actions-eks-role \
-      --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/GitHubActionsManageEKS
+    aws iam create-policy \
+      --policy-name k8sDeploy-IAM \
+      --description "Allows GitHub Actions to create and manage IAM" \
+      --policy-document file://IAM.json
+
+    aws iam create-policy \
+      --policy-name k8sDeploy-KMS \
+      --description "Allows GitHub Actions to create and manage KMS" \
+      --policy-document file://KMS.json
+
+    aws iam create-policy   \
+      --policy-name k8sDeploy-S3   \
+      --description "Allows GitHub Actions to create and manage state on S3" \
+      --policy-document file://S3.json
     ```
 
+5. Attach all policies to the role
+    ```bash
+    for POLICY in EKS EC2VPC IAM S3 KMS CloudWatchLogs; 
+    do
+    aws iam attach-role-policy --role-name ${ROLE_NAME} --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/k8sDeploy-${POLICY}; 
+    done
+    ```  
 6. Set GitHub repo variables
     ```
     AWS_REGION=$REGION

@@ -4,8 +4,8 @@ This project demonstrates a production-style deployment of Kubernetes on AWS/GCP
 The automation is intended to be used by dev/staging/prod teams to deploy k8s clusters with a single click.
 
 ## Prerequisits
-* [GCP prerequisits](docs/prerequisites.md#gcp)
-* [AWS prerequisits](docs/prerequisites.md#aws)
+* [GCP prerequisites](docs/prerequisites.md#gcp)
+* [AWS prerequisites](docs/prerequisites.md#aws)
 
 ## Architecture Diagrams
 * [AWS (temporary) README.md](./docs/aws_temp_README.md)
