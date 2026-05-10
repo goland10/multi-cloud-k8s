@@ -116,8 +116,8 @@ jobs:
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -var="private_cluster=false" \
             -out=tfplan
+#            -var="private_cluster=false" \
 
       - name: Terraform Apply
         if: inputs.action == 'deploy' && github.ref == 'refs/heads/main'
@@ -133,8 +133,8 @@ jobs:
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -var="private_cluster=false" \
             -auto-approve
+#            -var="private_cluster=false" \
 
   # ─────────────────────────────────────────────
   # AWS / EKS - Private endpoint
