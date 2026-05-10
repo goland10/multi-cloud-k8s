@@ -40,8 +40,8 @@ locals {
   # Combine and get unique list of all required AZs
   azs = distinct(concat(var.azs_public_subnets, var.azs_private_subnets))
 
-  public_subnets  = var.endpoint_access == "private" ? [] : [for i, v in var.azs_public_subnets : cidrsubnet(var.vpc_cidr, 8, i + 6)] #Create public subnets for NAT gateway
-  private_subnets = [for i, v in var.azs_private_subnets : cidrsubnet(var.vpc_cidr, 8, i)]                               #Always create private subnets
+  public_subnets  = var.endpoint_access == "private" ? [] : [for i, v in var.azs_public_subnets : cidrsubnet(var.vpc_cidr, 4, i + 6)] #Create public subnets for NAT gateway
+  private_subnets = [for i, v in var.azs_private_subnets : cidrsubnet(var.vpc_cidr, 4, i)]                               #Always create private subnets
 }
 
 #locals {

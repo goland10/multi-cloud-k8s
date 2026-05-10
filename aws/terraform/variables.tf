@@ -53,7 +53,7 @@ variable "azs_public_subnets" {
 }
 
 variable "single_nat_gateway" {
-  description = "1 NAT gateway for the whole region or 1 NAT gateway for each AZ."
+  description = "1 NAT gateway for the whole region (or 1 NAT gateway for each AZ)."
   type        = bool
 }
 
@@ -77,6 +77,11 @@ variable "vpc_cidr" {
   description = "Defines the CIDR block used on Amazon VPC created for Amazon EKS."
   type        = string
   #default     = "10.10.0.0/16"
+}
+
+variable "service_ipv4_cidr" {
+  description = "Defines the CIDR block for services inside the EKS cluster"
+  type = string
 }
 
 variable "region" {

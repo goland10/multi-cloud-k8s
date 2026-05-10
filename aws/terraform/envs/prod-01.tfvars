@@ -1,11 +1,11 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
-#env_type = "prod"          #Set for manuall test
-#env_number = 01            #Set for manuall test
+#env_type = "prod"       #Set for manuall test
+#env_number = 01         #Set for manuall test
 #env_name = "prod-01"
 
-region = "eu-west-1"
+#region = "eu-west-1"    #Set for manuall test
 
 # -------------------------------------------------------------------
 # Labels / cost allocation
@@ -17,6 +17,8 @@ owner = "Golan"
 # -------------------------------------------------------------------
 #vpc           = "dev-01"
 vpc_cidr    = "10.11.0.0/16"    #This is the base cidr
+service_ipv4_cidr = "172.21.0.0/16"     /* Set if you're doing cross-cluster routing 
+                                        (e.g. with a service mesh like Istio spanning multiple clusters, or VPC peering between cluster VPCs) */
 
 # -------------------------------------------------------------------
 # IAM (node role)

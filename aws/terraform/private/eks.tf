@@ -40,6 +40,7 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets #worker nodes subnet placement
+  service_ipv4_cidr = var.service_ipv4_cidr
 
   create_security_group      = true # default = true
   create_node_security_group = true # default = true
