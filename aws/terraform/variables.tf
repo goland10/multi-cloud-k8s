@@ -36,10 +36,9 @@ variable "owner" {
 # Cluster Privacy
 ################
 
-variable "private_cluster" {
+variable "endpoint_access" {
   description = "Whether the GKE cluster should be private"
-  type        = bool
-  default     = false
+  type        = string
 }
 
 variable "azs_public_subnets" {

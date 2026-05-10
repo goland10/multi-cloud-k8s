@@ -5,9 +5,9 @@ module "eks" {
   name                                     = local.cluster_name
   kubernetes_version                       = var.kubernetes_version
   endpoint_private_access                  = true
-  endpoint_public_access                   = var.private_cluster ? false : true
+  endpoint_public_access                   = var.endpoint_access == "private" ? false : true
   enable_cluster_creator_admin_permissions = true
-  access_entries = var.private_cluster ? {
+  access_entries = var.endpoint_access == "private" ? {
     # This entry links your bastion role to Cluster Admin rights
     bastion_admin = {
       principal_arn = aws_iam_role.bastion_role.arn  # Your existing bastion role

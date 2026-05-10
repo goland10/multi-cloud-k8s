@@ -1,5 +1,5 @@
 output "public_subnets" {
-  value = var.private_cluster ? null : local.public_subnets
+  value = var.endpoint_access == "private" ? null : local.public_subnets
 }
 
 output "private_subnets" {
@@ -7,11 +7,11 @@ output "private_subnets" {
 }
 
 output "public_eks_endpoint" {
-  value = var.private_cluster ? null : module.eks.cluster_endpoint
+  value = var.endpoint_access == "private" ? null : module.eks.cluster_endpoint
 }
 
 output "bastion_connection_command" {
-  value = var.private_cluster ? (
+  value = var.endpoint_access == "private" ? (
     <<EOT
     ec2-instance-connect ssh \
     --os-user ec2-user \

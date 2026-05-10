@@ -3,7 +3,7 @@ output "private_subnets" {
 }
 
 output "public_eks_endpoint" {
-  value = var.private_cluster ? null : module.eks.cluster_endpoint
+  value = var.endpoint_access == "private" ? null : module.eks.cluster_endpoint
 }
 
 output "connection_command" {

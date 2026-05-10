@@ -9,9 +9,9 @@ module "vpc" {
   public_subnets  = local.public_subnets
   private_subnets = local.private_subnets
 
-  enable_nat_gateway = var.private_cluster ? false : true
+  enable_nat_gateway = var.endpoint_access == "private" ? false : true
   single_nat_gateway = var.single_nat_gateway
-  create_igw         = var.private_cluster ? false : true
+  create_igw         = var.endpoint_access == "private" ? false : true
 
   enable_dns_support   = true
   enable_dns_hostnames = true

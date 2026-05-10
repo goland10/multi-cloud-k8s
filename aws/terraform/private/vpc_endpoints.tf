@@ -4,19 +4,19 @@ module "vpc_endpoints" {
 
   vpc_id = module.vpc.vpc_id
 
-  create_security_group = var.private_cluster
+  create_security_group = var.endpoint_access == "private"
 
   security_group_name        = "vpc-endpoints-sg"
   security_group_description = "Security group for VPC endpoints"
 
-  security_group_rules = var.private_cluster ? {
+  security_group_rules = var.endpoint_access == "private" ? {
     ingress_https = {
       description = "Allow HTTPS from VPC"
       cidr_blocks = [var.vpc_cidr]
     }
   } : {}
 
-  endpoints = { for k, v in local.endpoints : k => v if var.private_cluster }
+  endpoints = { for k, v in local.endpoints : k => v if var.endpoint_access == "private" }
 
 }
 
