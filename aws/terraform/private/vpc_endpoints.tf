@@ -4,23 +4,18 @@ module "vpc_endpoints" {
 
   vpc_id = module.vpc.vpc_id
 
-  create_security_group = var.endpoint_access == "private"
+  create_security_group = true
 
   security_group_name        = "vpc-endpoints-sg"
   security_group_description = "Security group for VPC endpoints"
 
-  security_group_rules = var.endpoint_access == "private" ? {
+  security_group_rules = {
     ingress_https = {
       description = "Allow HTTPS from VPC"
       cidr_blocks = [var.vpc_cidr]
     }
-  } : {}
+  }
 
-  endpoints = { for k, v in local.endpoints : k => v if var.endpoint_access == "private" }
-
-}
-
-locals {
   endpoints = {
     #Pulls container images stored in ECR (image layers are kept in S3).
     s3_gateway = {
@@ -79,20 +74,6 @@ locals {
       subnet_ids          = module.vpc.private_subnets
       private_dns_enabled = true
     }
-    #    ssm = {
-    #      service             = "ssm"
-    #      subnet_ids          = module.vpc.private_subnets
-    #      private_dns_enabled = true
-    #    }
-    #    ssmmessages = {
-    #      service             = "ssmmessages"
-    #      subnet_ids          = module.vpc.private_subnets
-    #      private_dns_enabled = true
-    #    }
-    #    ec2messages = {
-    #      service             = "ec2messages"
-    #      subnet_ids          = module.vpc.private_subnets
-    #      private_dns_enabled = true
-    #    }    
   }
+
 }
