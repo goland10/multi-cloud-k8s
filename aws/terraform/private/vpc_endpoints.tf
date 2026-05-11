@@ -32,8 +32,11 @@ locals {
     s3 = {
       service             = "s3"
       subnet_ids          = module.vpc.private_subnets
-      private_dns_enabled = true
       service_type        = "Interface"
+      private_dns_enabled = true
+      dns_options = {
+        private_dns_only_for_inbound_resolver_endpoint = true
+      }
       tags                = { Name = "s3-interface" }
     }
     #Allows the kubelet and nodes to call the ECR control-plane API (DescribeRepositories, GetAuthorizationToken, etc.) to authenticate before pulling images.

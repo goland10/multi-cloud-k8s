@@ -1,0 +1,25 @@
+jq -r '.Records[] | (.eventSource | split(".")[0]) + ":" + .eventName' event_history.json | sort -u > uniq.txt
+jq '[.Records[] | "\(.eventSource | split(".")[0]):\(.eventName)"] | unique' event_history.json
+
+aws cloudtrail lookup-events \
+  --lookup-attributes AttributeKey=Username,AttributeValue=GitHubActions \
+  --start-time "2026-05-10T22:38:49+03:00" \
+  --end-time "2026-05-10T22:48:26+03:00" \
+  --output json \
+  | jq '[.Events[] | "\(.EventSource | split(".")[0]):\(.EventName)"] | unique'  > deploy.json
+
+  aws cloudtrail lookup-events \
+    --lookup-attributes AttributeKey=Username,AttributeValue=josef \
+    --query 'Events[].{EventTime:EventTime,EventSource:EventSource,EventName:EventName}' \
+    --start-time "2026-05-10T22:38:49+03:00"   \
+    --end-time "2026-05-10T22:48:26+03:00"   \
+    --output json   \
+    | jq 'map((.EventSource | split(".")[0]) + ":" + .EventName) | unique'
+
+    aws iam attach-role-policy \
+  --role-name github-actions-eks-role \
+  --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+  aws iam detach-role-policy \
+  --role-name github-actions-eks-role \
+  --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
