@@ -23,3 +23,5 @@ aws cloudtrail lookup-events \
   aws iam detach-role-policy \
   --role-name github-actions-eks-role \
   --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+  jq '.Statement[0].Action = $actions[0]' --slurpfile actions all-actions.json from-trail-template.json > from-trail.json

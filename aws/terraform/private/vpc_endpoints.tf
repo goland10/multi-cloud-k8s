@@ -29,6 +29,9 @@ module "vpc_endpoints" {
       subnet_ids          = module.vpc.private_subnets
       service_type        = "Interface"
       private_dns_enabled = true
+      dns_options = {
+        private_dns_only_for_inbound_resolver_endpoint = false
+      }
       tags                = { Name = "s3-interface" }
     }
     #Allows the kubelet and nodes to call the ECR control-plane API (DescribeRepositories, GetAuthorizationToken, etc.) to authenticate before pulling images.
