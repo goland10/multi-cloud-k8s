@@ -24,16 +24,17 @@ module "vpc_endpoints" {
       route_table_ids = module.vpc.private_route_table_ids
       tags            = { Name = "s3-gateway" }
     }
-    s3 = {
-      service             = "s3"
-      subnet_ids          = module.vpc.private_subnets
-      service_type        = "Interface"
-      private_dns_enabled = true
-      dns_options = {
-        private_dns_only_for_inbound_resolver_endpoint = false
-      }
-      tags                = { Name = "s3-interface" }
-    }
+    #There is no need for s3 interface endpoint in this setup
+#    s3 = {
+#      service             = "s3"
+#      subnet_ids          = module.vpc.private_subnets
+#      service_type        = "Interface"
+#      private_dns_enabled = true
+#      dns_options = {
+#        private_dns_only_for_inbound_resolver_endpoint = false
+#      }
+#      tags                = { Name = "s3-interface" }
+#    }
     #Allows the kubelet and nodes to call the ECR control-plane API (DescribeRepositories, GetAuthorizationToken, etc.) to authenticate before pulling images.
     ecr_api = {
       service             = "ecr.api"
