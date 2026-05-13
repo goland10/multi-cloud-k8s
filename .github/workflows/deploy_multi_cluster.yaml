@@ -109,11 +109,11 @@ jobs:
         if: inputs.action == 'deploy'
         run: |
           terraform plan \
+            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -var="region=${{ vars.AWS_REGION }}" \
             -var="endpoint_access=${{ inputs.endpoint_access }}" \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
-            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -out=tfplan
 
       - name: Terraform Apply
@@ -127,11 +127,11 @@ jobs:
         if: inputs.action == 'destroy' && github.ref == 'refs/heads/main'
         run: |
           terraform destroy \
+            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -var="region=${{ vars.AWS_REGION }}" \
             -var="endpoint_access=${{ inputs.endpoint_access }}" \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
-            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -auto-approve
 
 #
@@ -321,9 +321,9 @@ jobs:
         if: inputs.action == 'deploy'
         run: |
           terraform plan \
+            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
-            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -out=tfplan
 
       - name: Terraform Apply
@@ -337,7 +337,7 @@ jobs:
         if: inputs.action == 'destroy' && github.ref == 'refs/heads/main'
         run: |
           terraform destroy \
+            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
-            -var-file="./envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -auto-approve
