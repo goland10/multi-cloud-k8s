@@ -121,3 +121,8 @@ variable "desired_size" {
 #  default     = "1.33.0-20250704"
 #}
 
+#variable "bastion_role_arn" {
+#  description = "ARN of the bastion role. Set to null for public setup."
+#  type        = string
+#  default     = null
+#}

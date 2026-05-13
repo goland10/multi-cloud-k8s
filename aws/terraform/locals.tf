@@ -44,9 +44,17 @@ locals {
   private_subnets = [for i, v in var.azs_private_subnets : cidrsubnet(var.vpc_cidr, 4, i)]                               #Always create private subnets
 }
 
+#data "aws_iam_role" "bastion_role" {
+#  count = var.endpoint_access == "private" ? 1 : 0
+#  name  = "${local.cluster_name}-bastion-role"
+#  #assume_role_policy = "{}"
+#}
+
 #locals {
-#  tags = {
-#    created-by = "Golan"
-#    Environment  = local.env_name  #.cluster_name
-#  }
+#  bastion_role_arn = var.endpoint_access == "private" ? aws_iam_role.bastion_role[0].arn : null
+#}
+
+#data "aws_iam_role" "bastion_role" {
+#  count = var.endpoint_access == "private" ? 1 : 0
+#  name  = "${local.cluster_name}-bastion-role"
 #}

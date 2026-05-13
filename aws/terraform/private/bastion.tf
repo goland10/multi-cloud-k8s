@@ -36,6 +36,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_bastion_to_eks" {
 # Bastion IAM
 #########################################
 resource "aws_iam_role" "bastion_role" {
+#  count = var.endpoint_access == "private" ? 1 : 0
   name = "${local.cluster_name}-bastion-role"
 
   assume_role_policy = jsonencode({
@@ -48,6 +49,10 @@ resource "aws_iam_role" "bastion_role" {
       }
     }]
   })
+}
+
+locals {
+  bastion_role_arn = aws_iam_role.bastion_role.arn
 }
 
 resource "aws_iam_role_policy_attachment" "bastion_ssm" {
