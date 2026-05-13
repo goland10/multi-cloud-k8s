@@ -70,24 +70,17 @@ jobs:
           fi
           echo "✅ K8S cluster name is valid: $env_name"
 
-  # ─────────────────────────────────────────────
-  # AWS / EKS - Public endpoint
-  # ─────────────────────────────────────────────
-  terraform-aws-public:
-    name: "Terraform [EKS Public Endpoints]"
+
+  terraform-aws:
+    name: "Terraform [AWS/EKS ${{ inputs.endpoint_access }} Endpoints]"
     runs-on: ubuntu-latest
     needs: validate
-    if: inputs.cloud == 'AWS' && inputs.endpoint_access == 'public'
-
+    if: inputs.cloud == 'AWS'
+    
     defaults:
       run:
-        working-directory: ./aws/terraform/public
-
-    env:
-      TF_VAR_region: ${{ vars.AWS_REGION }}
-      TF_VAR_env_type: ${{ inputs.env_type }}
-      TF_VAR_env_number: ${{ inputs.env_number }}
-      TF_VAR_endpoint_access: ${{ inputs.endpoint_access }}
+        # Use the input to pick the right directory dynamically
+        working-directory: ./aws/terraform/${{ inputs.endpoint_access }}
 
     steps:
       - name: Checkout repository
@@ -107,7 +100,7 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="key=${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate"
+            -backend-config="key=${{ inputs.endpoint_access }}/${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate" # ex. public/dev/01/terraform.tfstate
 
       - name: Terraform Validate
         run: terraform validate
@@ -116,6 +109,8 @@ jobs:
         if: inputs.action == 'deploy'
         run: |
           terraform plan \
+            -var="region=${{ vars.AWS_REGION }}" \
+            -var="endpoint_access=${{ inputs.endpoint_access }}" \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
@@ -125,85 +120,159 @@ jobs:
         if: inputs.action == 'deploy' && github.ref == 'refs/heads/main'
         run: |
           terraform apply \
-            -auto-approve \
-            tfplan
+          -auto-approve \
+          tfplan
 
       - name: Terraform Destroy
         if: inputs.action == 'destroy' && github.ref == 'refs/heads/main'
         run: |
           terraform destroy \
+            -var="region=${{ vars.AWS_REGION }}" \
+            -var="endpoint_access=${{ inputs.endpoint_access }}" \
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
             -auto-approve
 
-  # ─────────────────────────────────────────────
-  # AWS / EKS - Private endpoint
-  # ─────────────────────────────────────────────
-  terraform-aws-private:
-    name: "Terraform [EKS Private Endpoints]"
-    runs-on: ubuntu-latest
-    needs: validate
-    if: inputs.cloud == 'AWS' && inputs.endpoint_access == 'private'
-
-    defaults:
-      run:
-        working-directory: ./aws/terraform/private
-
-    env:
-      TF_VAR_region: ${{ vars.AWS_REGION }}
-      TF_VAR_env_type: ${{ inputs.env_type }}
-      TF_VAR_env_number: ${{ inputs.env_number }}
-      TF_VAR_endpoint_access: ${{ inputs.endpoint_access }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Authenticate to AWS (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: 1.14
-
-      - name: Terraform Init
-        run: |
-          terraform init \
-            -backend-config="key=${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate"
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        if: inputs.action == 'deploy'
-        run: |
-          terraform plan \
-            -var="env_type=${{ inputs.env_type }}" \
-            -var="env_number=${{ inputs.env_number }}" \
-            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -out=tfplan
-
-      - name: Terraform Apply
-        if: inputs.action == 'deploy' && github.ref == 'refs/heads/main'
-        run: |
-          terraform apply \
-            -auto-approve \
-            tfplan
-
-      - name: Terraform Destroy
-        if: inputs.action == 'destroy' && github.ref == 'refs/heads/main'
-        run: |
-          terraform destroy \
-            -var="env_type=${{ inputs.env_type }}" \
-            -var="env_number=${{ inputs.env_number }}" \
-            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
-            -auto-approve
-
+#
+#  # ─────────────────────────────────────────────
+#  # AWS / EKS - Public endpoint
+#  # ─────────────────────────────────────────────
+#  terraform-aws-public:
+#    name: "Terraform [EKS Public Endpoints]"
+#    runs-on: ubuntu-latest
+#    needs: validate
+#    if: inputs.cloud == 'AWS' && inputs.endpoint_access == 'public'
+#
+#    defaults:
+#      run:
+#        working-directory: ./aws/terraform/public
+#
+#    #env:
+#      #TF_VAR_region: ${{ vars.AWS_REGION }}
+#      #TF_VAR_env_type: ${{ inputs.env_type }}
+#      #TF_VAR_env_number: ${{ inputs.env_number }}
+#      #TF_VAR_endpoint_access: ${{ inputs.endpoint_access }}
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v6
+#
+#      - name: Authenticate to AWS (OIDC)
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+#          aws-region: ${{ vars.AWS_REGION }}
+#
+#      - name: Set up Terraform
+#        uses: hashicorp/setup-terraform@v4
+#        with:
+#          terraform_version: 1.14
+#
+#      - name: Terraform Init
+#        run: |
+#          terraform init \
+#            -backend-config="key=${{inputs.endpoint_access}}/${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate" # ex. public/dev/01/terraform.tfstate
+#
+#      - name: Terraform Validate
+#        run: terraform validate
+#
+#      - name: Terraform Plan
+#        if: inputs.action == 'deploy'
+#        run: |
+#          terraform plan \
+#            -var="region=${{ vars.AWS_REGION }}" \
+#            -var="endpoint_access=${{ inputs.endpoint_access }}" \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -out=tfplan
+#
+#      - name: Terraform Apply
+#        if: inputs.action == 'deploy' && github.ref == 'refs/heads/main'
+#        run: |
+#          terraform apply \
+#            -auto-approve \
+#            tfplan
+#
+#      - name: Terraform Destroy
+#        if: inputs.action == 'destroy' && github.ref == 'refs/heads/main'
+#        run: |
+#          terraform destroy \
+#            -var="region=${{ vars.AWS_REGION }}" \
+#            -var="endpoint_access=${{ inputs.endpoint_access }}" \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -auto-approve
+#
+#  # ─────────────────────────────────────────────
+#  # AWS / EKS - Private endpoint
+#  # ─────────────────────────────────────────────
+#  terraform-aws-private:
+#    name: "Terraform [EKS Private Endpoints]"
+#    runs-on: ubuntu-latest
+#    needs: validate
+#    if: inputs.cloud == 'AWS' && inputs.endpoint_access == 'private'
+#
+#    defaults:
+#      run:
+#        working-directory: ./aws/terraform/private
+#
+#    env:
+#      TF_VAR_region: ${{ vars.AWS_REGION }}
+#      TF_VAR_env_type: ${{ inputs.env_type }}
+#      TF_VAR_env_number: ${{ inputs.env_number }}
+#      TF_VAR_endpoint_access: ${{ inputs.endpoint_access }}
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v6
+#
+#      - name: Authenticate to AWS (OIDC)
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+#          aws-region: ${{ vars.AWS_REGION }}
+#
+#      - name: Set up Terraform
+#        uses: hashicorp/setup-terraform@v4
+#        with:
+#          terraform_version: 1.14
+#
+#      - name: Terraform Init
+#        run: |
+#          terraform init \
+#            -backend-config="key=${{inputs.endpoint_access}}/${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate"
+#
+#      - name: Terraform Validate
+#        run: terraform validate
+#
+#      - name: Terraform Plan
+#        if: inputs.action == 'deploy'
+#        run: |
+#          terraform plan \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -out=tfplan
+#
+#      - name: Terraform Apply
+#        if: inputs.action == 'deploy' && github.ref == 'refs/heads/main'
+#        run: |
+#          terraform apply \
+#            -auto-approve \
+#            tfplan
+#
+#      - name: Terraform Destroy
+#        if: inputs.action == 'destroy' && github.ref == 'refs/heads/main'
+#        run: |
+#          terraform destroy \
+#            -var="env_type=${{ inputs.env_type }}" \
+#            -var="env_number=${{ inputs.env_number }}" \
+#            -var-file="../envs/${{ inputs.env_type }}-${{ inputs.env_number }}.tfvars" \
+#            -auto-approve
+#
   # ─────────────────────────────────────────────
   # GCP / GKE Job
   # ─────────────────────────────────────────────

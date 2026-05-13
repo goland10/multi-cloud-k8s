@@ -2,8 +2,8 @@
 # Environment identity
 # -------------------------------------------------------------------
 #env_type = "dev"        #Set for manuall test
-#env_number = 01         #Set for manuall test
-#env_name = "dev-01"
+#env_number = 02         #Set for manuall test
+#env_name = "dev-02"
 
 #region = "eu-west-1"    #Set for manuall test
 
@@ -32,7 +32,7 @@ azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 
 # Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true)
 single_nat_gateway = true         
-#endpoint_access = "private"    #Set for manuall test
+#endpoint_access = "private"    #Set for manuall test [ private | public ]
 
 # Worker node location
 azs_private_subnets = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 AZs required.
