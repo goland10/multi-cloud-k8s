@@ -5,7 +5,7 @@ module "eks" {
   name                                     = local.cluster_name
   kubernetes_version                       = var.kubernetes_version
   endpoint_private_access                  = true
-  endpoint_public_access                   = var.endpoint_access == "private" ? false : true
+  endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
 
   addons = {
