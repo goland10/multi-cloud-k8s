@@ -160,6 +160,7 @@ jobs:
             --os-user ec2-user \
             --connection-type eice \
             --instance-id i-0103990515b68ad79
+            -- -o StrictHostKeyChecking=no
 
 #          #aws sts get-caller-identity
 #          #aws eks update-kubeconfig --name ${{inputs.env_type}}-${{inputs.env_number}} --region ${{vars.AWS_REGION}}
