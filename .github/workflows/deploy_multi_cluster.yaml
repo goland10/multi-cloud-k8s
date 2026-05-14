@@ -36,7 +36,7 @@ on:
         description: "Control plane endpoint access [AWS only]"
         required: false
         type: choice
-        default: "public"
+        default: "private"
         options:
           - public
           - private
@@ -156,10 +156,10 @@ jobs:
 
       - name: Get cluster config
         run: |
-          yes | aws ec2-instance-connect ssh \
+          aws ec2-instance-connect ssh \
             --os-user ec2-user \
             --connection-type eice \
-            --instance-id i-0103990515b68ad79
+            --instance-id i-0103990515b68ad79 "id"
 
 #          #aws sts get-caller-identity
 #          #aws eks update-kubeconfig --name ${{inputs.env_type}}-${{inputs.env_number}} --region ${{vars.AWS_REGION}}
