@@ -7,7 +7,7 @@ on:
         description: "Action to perform"
         required: true
         type: choice
-        #default: "deploy"
+        default: "test-only"
         options:
           - deploy
           - destroy
@@ -161,9 +161,9 @@ jobs:
             --connection-type eice \
             --instance-id i-0103990515b68ad79
 
-          #aws sts get-caller-identity
-          #aws eks update-kubeconfig --name ${{inputs.env_type}}-${{inputs.env_number}} --region ${{vars.AWS_REGION}}
-          #kubectl get nodes
+#          #aws sts get-caller-identity
+#          #aws eks update-kubeconfig --name ${{inputs.env_type}}-${{inputs.env_number}} --region ${{vars.AWS_REGION}}
+#          #kubectl get nodes
 
 #
 #  # ─────────────────────────────────────────────
