@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
-env_type = "dev"        #Set for manuall test
+env_type = "prod"        #Set for manuall test
 env_number = 01         #Set for manuall test
 #env_name = "dev-01"
 
