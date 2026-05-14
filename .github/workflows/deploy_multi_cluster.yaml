@@ -159,7 +159,8 @@ jobs:
           aws ec2-instance-connect ssh \
             --os-user ec2-user \
             --connection-type eice \
-            --instance-id i-0103990515b68ad79 "id"
+            --instance-id i-0103990515b68ad79 
+            -- "uptime"
 
 #          #aws sts get-caller-identity
 #          #aws eks update-kubeconfig --name ${{inputs.env_type}}-${{inputs.env_number}} --region ${{vars.AWS_REGION}}
