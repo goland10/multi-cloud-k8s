@@ -154,9 +154,12 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Install AWS CLI and Session Manager Plugin
+      - name: Get cluster config
         run: |
           aws sts get-caller-identity
+          aws eks update-kubeconfig --name ${{inputs.env_type}}-{{inputs.env_number}} --region ${{vars.AWS_REGION}}
+          kubectl get nodes
+
 #
 #  # ─────────────────────────────────────────────
 #  # AWS / EKS - Public endpoint
