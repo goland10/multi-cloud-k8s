@@ -157,7 +157,7 @@ jobs:
       - name: Get cluster config
         run: |
           aws sts get-caller-identity
-          aws eks update-kubeconfig --name ${{inputs.env_type}}-{{inputs.env_number}} --region ${{vars.AWS_REGION}}
+          aws eks update-kubeconfig --name ${{inputs.env_type}}-${{inputs.env_number}} --region ${{vars.AWS_REGION}}
           kubectl get nodes
 
 #
