@@ -16,13 +16,6 @@ variable "env_number" {
   type        = number
 }
 
-#variable "cluster_name" {
-#  description = "Name of the EKS cluster"
-#  type        = string
-#  #default     = "dev-01"
-#}
-
-
 #######################################
 # Tags / cost allocation
 #######################################
@@ -119,10 +112,4 @@ variable "desired_size" {
 #  description = "Default EKS AMI release version for node groups"
 #  type        = string
 #  default     = "1.33.0-20250704"
-#}
-
-#variable "bastion_role_arn" {
-#  description = "ARN of the bastion role. Set to null for public setup."
-#  type        = string
-#  default     = null
 #}

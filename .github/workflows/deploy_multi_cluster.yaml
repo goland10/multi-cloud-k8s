@@ -7,7 +7,7 @@ on:
         description: "Action to perform"
         required: true
         type: choice
-        default: "deploy"
+        #default: "deploy"
         options:
           - deploy
           - destroy
@@ -20,7 +20,7 @@ on:
           - GCP
           - AWS
       env_type:
-        description: "Environment type (tfvars file name must adhere to 'env_type-env_number.tfvars')"
+        description: "Environment type (tfvars file name must adhere to 'env_type-env_number.tfvars'. ex. 'dev-01.tfvars')"
         required: true
         type: choice
         options:
@@ -341,3 +341,27 @@ jobs:
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -auto-approve
+
+#      - name: Stop workflow
+#        run: |
+#          echo "Intentional stop"
+#          exit 0
+#####################################  
+
+#      - name: Set up gcloud
+#        uses: google-github-actions/setup-gcloud@v2
+#        with:
+#          install_components: gke-gcloud-auth-plugin
+#          
+#      - name: Get K8S credentials
+#        run: |
+#          gcloud container clusters get-credentials \
+#            ${{inputs.env_type}}-${{inputs.env_number}} \
+#            --location $(terraform output -raw cluster_location) \
+#            --project ${{ vars.PROJECT_ID }}
+#
+#      - name: Verify cluster access
+#        run: |
+#          kubectl version --client
+#          kubectl get nodes  
+                              

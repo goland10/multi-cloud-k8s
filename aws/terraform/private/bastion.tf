@@ -19,6 +19,18 @@ resource "aws_vpc_security_group_egress_rule" "bastion_allow_all_outbound" {
   description = "Allow all outbound traffic for updates and API communication"
 }
 
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_from_eice" {
+  security_group_id = aws_security_group.bastion_sg.id 
+
+  # Link it specifically to the EIC Endpoint's Security Group
+  referenced_security_group_id = aws_security_group.eic_endpoint_sg.id
+
+  from_port   = 22
+  ip_protocol = "tcp"
+  to_port     = 22
+  description = "Allow the bastion SSH traffic from the EIC Endpoint"
+}
+
 #########################################
 # Cluster security group
 #########################################
@@ -140,5 +152,3 @@ resource "aws_instance" "bastion" {
     Name = "${local.cluster_name}-bastion"
   }
 }
-
-
