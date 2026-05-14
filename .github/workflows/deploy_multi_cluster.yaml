@@ -70,9 +70,11 @@ jobs:
           fi
           echo "✅ K8S cluster name is valid: $env_name"
 
-
+  # ─────────────────────────────────────────────
+  # AWS / EKS Job
+  # ─────────────────────────────────────────────
   terraform-aws:
-    name: "Terraform [AWS/EKS ${{ inputs.endpoint_access }} Endpoints]"
+    name: "Terraform [AWS/EKS ${{ inputs.endpoint_access }} Endpoints Setup]"
     runs-on: ubuntu-latest
     needs: validate
     if: inputs.cloud == 'AWS'
@@ -134,6 +136,26 @@ jobs:
             -var="env_number=${{ inputs.env_number }}" \
             -auto-approve
 
+  test-private-cluster:
+    name: "Test Private EKS via Bastion"
+    runs-on: ubuntu-latest
+    needs: terraform-aws
+    # Only run for AWS when endpoint_access is 'private'
+    if: inputs.action == 'deploy' && inputs.cloud == 'AWS' && inputs.endpoint_access == 'private'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Authenticate to AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Install AWS CLI and Session Manager Plugin
+        run: |
+          aws sts get-caller-identity
 #
 #  # ─────────────────────────────────────────────
 #  # AWS / EKS - Public endpoint
