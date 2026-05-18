@@ -31,18 +31,18 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_from_eice" {
   description = "Allow the bastion SSH traffic from the EIC Endpoint"
 }
 
-#########################################
-# Cluster security group
-#########################################
-resource "aws_vpc_security_group_ingress_rule" "allow_bastion_to_eks" {
-  security_group_id = module.eks.cluster_primary_security_group_id
-
-  referenced_security_group_id = aws_security_group.bastion_sg.id
-  from_port                    = 443
-  to_port                      = 443
-  ip_protocol                  = "tcp"
-  description                  = "Allow Bastion host to communicate with EKS API server"
-}
+##########################################
+## Cluster security group
+##########################################
+#resource "aws_vpc_security_group_ingress_rule" "allow_bastion_to_eks" {
+#  security_group_id = module.eks.cluster_primary_security_group_id
+#
+#  referenced_security_group_id = aws_security_group.bastion_sg.id
+#  from_port                    = 443
+#  to_port                      = 443
+#  ip_protocol                  = "tcp"
+#  description                  = "Allow Bastion host to communicate with EKS API server"
+#}
 
 #########################################
 # Bastion IAM
@@ -90,12 +90,11 @@ resource "aws_iam_policy" "bastion_eks_access" {
           "eks:ListClusters"
         ]
         Effect   = "Allow"
-        Resource = module.eks.cluster_arn
+        Resource = "*"
       }
     ]
   })
 }
-
 resource "aws_iam_role_policy_attachment" "bastion_eks" {
   policy_arn = aws_iam_policy.bastion_eks_access.arn
   role       = aws_iam_role.bastion_role.name
@@ -143,10 +142,10 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = false
 
   # This script runs once when the instance boots to install kubectl
-  user_data = <<-EOT
-    #!/bin/bash
-    dnf install -y kubectl
-  EOT
+  #user_data = <<-EOT
+  #  #!/bin/bash
+  #  dnf install -y kubectl
+  #EOT
 
   tags = {
     Name = "${local.cluster_name}-bastion"
