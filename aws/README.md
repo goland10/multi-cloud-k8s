@@ -62,7 +62,8 @@ The cluster API server is reachable over the public internet (protected by IAM a
 
 ![Public Endpoint Architecture](docs/aws_public_endpoints_access.drawio.png)
 
-**VPC layout:**
+#### VPC layout
+
 - Public subnets: one per requested AZ, used by the NAT Gateway
 - Private subnets: worker nodes are always placed here — never directly exposed
 
@@ -79,7 +80,7 @@ The cluster API server has no public endpoint. All traffic stays inside the VPC.
 
 ![Private Endpoint Architecture](docs/aws_private_endpoints_access.drawio.png)
 
-**Private cluster connectivity test flow:**
+#### Private cluster connectivity test flow:
 1. GitHub Actions authenticates to AWS via OIDC
 2. The bastion instance ID is resolved by tag name
 3. An ephemeral `ed25519` key pair is generated in memory
@@ -174,7 +175,7 @@ Settings in the `Run workflow` menu will overide tfvars files.
 
 ## Prerequisites & Bootstrap
 
-See [docs/prerequisites.md](docs/prerequisites.md) for the full one-time AWS account setup, including OIDC provider creation, IAM role and policy bootstrapping, and S3 state bucket creation.
+See [prerequisites](docs/prerequisites.md) for the full one-time AWS account setup, including OIDC provider creation, IAM role and policy bootstrapping, and S3 state bucket creation.
 
 ---
 
