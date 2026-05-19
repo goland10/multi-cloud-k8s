@@ -211,6 +211,10 @@ EICE supports standard SSH port-forwarding, which is required to redirect `kubec
 
 SSM Session Manager requires provisioning of 3 Interface VPC endpoints (ssm, ssmmessages, ec2messages) + SSM Agent installed and running on the bastion + IAM role allowing SSM access --> more expensive & complex.
 
+**Why a dedicated bastion and not a worker node?**
+
+A worker node could technically serve as the jump host, but mixing that responsibility with a node that runs workloads violates the principle of least privilege — a compromised pod could potentially interact with the tunnel. A dedicated `t3.nano` bastion runs nothing else, has no IAM permissions beyond what EICE requires, and can be locked down independently.
+
 **Why VPC-CNI Prefix Delegation?**
 
 Without Prefix Delegation each worker node is able to support a limited number of ip addresses (depends on the instance type).
