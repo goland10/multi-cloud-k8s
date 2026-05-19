@@ -34,7 +34,8 @@ GitHub Actions (OIDC)
 
 The workflow supports **deploy**, **destroy**, and **test-only** actions across multiple isolated environments (`dev-01`, `dev-02`, `prod-01`, etc.). Each environment is fully self-contained with its own VPC, cluster, and Terraform state file.
 
-<video src="./docs/run_workflow_menu.mp4" controls width="100%"></video>
+<video src="https://github.com/user-attachments/assets/d9008da5-81dc-4611-a30f-1ab38d60e969" controls width="100%"></video>
+
 
 ---
 
