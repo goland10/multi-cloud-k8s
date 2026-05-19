@@ -53,6 +53,15 @@ permissions:
   id-token: write   # Required for OIDC (both GCP WIF and AWS OIDC)
 
 jobs:
+  stop:
+    name: Stop workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: stop immediately
+        run: |
+          echo "Intentional stop"
+          exit 0
+  ############################  
   # ─────────────────────────────────────────────
   # Shared validation (runs for both clouds)
   # ─────────────────────────────────────────────
@@ -313,12 +322,6 @@ jobs:
             -var="env_type=${{ inputs.env_type }}" \
             -var="env_number=${{ inputs.env_number }}" \
             -auto-approve
-
-#      - name: Stop workflow
-#        run: |
-#          echo "Intentional stop"
-#          exit 0
-#####################################  
 
 #      - name: Set up gcloud
 #        uses: google-github-actions/setup-gcloud@v2
