@@ -13,6 +13,7 @@ A production-grade Infrastructure-as-Code platform for deploying and managing mu
   - [Public Endpoint Mode](#public-endpoint-mode)
   - [Private Endpoint Mode](#private-endpoint-mode)
 - [CI/CD Pipeline](#cicd-pipeline)
+- [Project Structure](#project-structure)
 - [Environment Management](#environment-management)
 - [Prerequisites & Bootstrap](#prerequisites--bootstrap)
 - [GitHub Actions Variables](#github-actions-variables)
@@ -33,6 +34,8 @@ GitHub Actions (OIDC)
 
 The workflow supports **deploy**, **destroy**, and **test-only** actions across multiple isolated environments (`dev-01`, `dev-02`, `prod-01`, etc.). Each environment is fully self-contained with its own VPC, cluster, and Terraform state file.
 
+<video src="./docs/run_workflow_menu.mp4" controls width="100%"></video>
+
 ---
 
 ## Key Features
@@ -44,40 +47,6 @@ The workflow supports **deploy**, **destroy**, and **test-only** actions across 
 - **Least-privilege IAM:** Custom IAM policy (`LeastPriviliges.json`) built using `iamlive` + Access Analyzer, granting only the permissions Terraform actually requires
 - **VPC-CNI Prefix Delegation:** Increases pod density per node and accelerates IP assignment — relevant for cost-efficient small instance types like `t3.small`
 - **Cluster connectivity testing:** Automated post-deploy test job validates EKS node and pod readiness, adapting transparently to public or private tunnel mode
-
----
-
-## Project Structure
-
-```
-.
-├── .github/workflows/
-│   └── deploy_multi_cluster.yaml   # Unified CI/CD pipeline
-├── aws/
-│   └── terraform/
-│       ├── backend.tf              # S3 remote state backend
-│       ├── eks.tf                  # EKS cluster + managed node group + addons
-│       ├── vpc.tf                  # VPC, subnets, NAT gateway, IGW
-│       ├── locals.tf               # Computed locals, AZ validation
-│       ├── variables.tf            # All input variable definitions
-│       ├── providers.tf            # AWS provider config
-│       ├── envs/
-│       │   ├── dev-01.tfvars       # Dev cluster 01 config
-│       │   ├── dev-02.tfvars       # Dev cluster 02 config
-│       │   └── prod-01.tfvars      # Production cluster config
-│       ├── public/                 # Public endpoint overlay
-│       │   ├── locals_public.tf
-│       │   └── outputs.tf
-│       └── private/                # Private endpoint overlay
-│           ├── bastion.tf          # Bastion EC2, IAM role, security groups
-│           ├── eice.tf             # EC2 Instance Connect Endpoint
-│           ├── vpc_endpoints.tf    # Interface endpoints (ECR, STS, EC2, EKS, CWLogs)
-│           └── outputs.tf
-└── docs/
-    ├── prerequisites.md
-    ├── aws_public_endpoints_access.drawio.png
-    └── aws_private_endpoints_access.drawio.png
-```
 
 ---
 
@@ -141,6 +110,40 @@ validate
 - The `test-aws-cluster` job runs even if `terraform-aws` was skipped (`always()` condition), enabling standalone cluster health checks without re-running Terraform.
 - Terraform **Apply** and **Destroy** are gated to the `main` branch.
 - Terraform state is stored in S3 at `{endpoint_access}/{env_type}/{env_number}/terraform.tfstate`.
+
+---
+
+## Project Structure
+
+```
+.
+├── .github/workflows/
+│   └── deploy_multi_cluster.yaml   # Unified CI/CD pipeline
+├── aws/
+│   └── terraform/
+│       ├── backend.tf              # S3 remote state backend
+│       ├── eks.tf                  # EKS cluster + managed node group + addons
+│       ├── vpc.tf                  # VPC, subnets, NAT gateway, IGW
+│       ├── locals.tf               # Computed locals, AZ validation
+│       ├── variables.tf            # All input variable definitions
+│       ├── providers.tf            # AWS provider config
+│       ├── envs/
+│       │   ├── dev-01.tfvars       # Dev cluster 01 config
+│       │   ├── dev-02.tfvars       # Dev cluster 02 config
+│       │   └── prod-01.tfvars      # Production cluster config
+│       ├── public/                 # Public endpoint overlay
+│       │   ├── locals_public.tf
+│       │   └── outputs.tf
+│       └── private/                # Private endpoint overlay
+│           ├── bastion.tf          # Bastion EC2, IAM role, security groups
+│           ├── eice.tf             # EC2 Instance Connect Endpoint
+│           ├── vpc_endpoints.tf    # Interface endpoints (ECR, STS, EC2, EKS, CWLogs)
+│           └── outputs.tf
+└── docs/
+    ├── prerequisites.md
+    ├── aws_public_endpoints_access.drawio.png
+    └── aws_private_endpoints_access.drawio.png
+```
 
 ---
 
