@@ -56,21 +56,20 @@ jobs:
     name: Validate Inputs
     runs-on: ubuntu-latest
     steps:
-      - name: Validate K8S cluster name
+      - name: Validate Environment Number Range
         run: |
-          env_name="${{ inputs.env_type }}-${{ inputs.env_number }}"
-
-          if [[ ! "$env_name" =~ ^[a-z]([-a-z0-9]{0,38}[a-z0-9])?$ ]]; then
-            echo "❌ Invalid K8S cluster name: $env_name"
-            echo "Rules:"
-            echo " - 1–40 characters"
-            echo " - lowercase letters, numbers, hyphens"
-            echo " - must start with a letter"
-            echo " - must not end with a hyphen"
+          ENV_NUM="${{ inputs.env_number }}"
+          echo "Validating environment number: $ENV_NUM"
+          
+          # Match exactly two digits from 01 to 99
+          if [[ "$ENV_NUM" =~ ^[0-9]{2}$ ]] && [ ! "$ENV_NUM" = "00" ]; then
+            echo "❌ Error: env_number must be a two-digit integer zero-padded between 01 and 99 (e.g., 01, 02, 15)."
+            echo "Received: '$ENV_NUM'"
             exit 1
           fi
-          echo "✅ K8S cluster name is valid: $env_name"
-
+          
+          echo "✅ Input format verified successfully."
+          
   # ─────────────────────────────────────────────
   # AWS / EKS Job
   # ─────────────────────────────────────────────
