@@ -1,16 +1,15 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
-env_type = "dev"        #Set for manuall test
-env_number = 01         #Set for manuall test
-#env_name = "dev-01"
+#env_type = "dev"        #Set for manuall test
+#env_number = 01         #Set for manuall test
 
-region = "eu-west-1"    #Set for manuall test
+#region = "eu-west-1"    #Set for manuall test
 
 # -------------------------------------------------------------------
 # Labels / cost allocation
 # -------------------------------------------------------------------
-owner = "yaniv"
+owner = "Yaniv"
 
 # -------------------------------------------------------------------
 # Network
@@ -30,12 +29,12 @@ service_ipv4_cidr = "172.20.0.0/16"     /* Set if you're doing cross-cluster rou
 # AZs for NAT gateway/s. Only for public setup!
 azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]       
 
-# Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true)
+# Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true). Only for public setup!
 single_nat_gateway = true         
-endpoint_access = "public" #Set for manuall test [ private | public ]
+#endpoint_access = "public" #Set for manuall test [ private | public ]
 
 # Worker node location
-azs_private_subnets = ["eu-west-1a","eu-west-1b"] #,"eu-west-1z"]  #At least 2 AZs required.
+azs_private_subnets = ["eu-west-1a","eu-west-1b"]         #At least 2 AZs required.
 
 # -------------------------------------------------------------------
 # EKS Worker node configuration
@@ -48,7 +47,7 @@ desired_size = 1
 # -------------------------------------------------------------------
 # EKS cluster behavior
 # -------------------------------------------------------------------
-kubernetes_version = "1.34"
+kubernetes_version = "1.35"
 
 #deletion_protection = false
 

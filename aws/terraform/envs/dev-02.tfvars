@@ -30,7 +30,7 @@ service_ipv4_cidr = "172.22.0.0/16"     /* Set if you're doing cross-cluster rou
 # AZs for NAT gateway/s. Only for public setup!
 azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]       
 
-# Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true)
+# Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true). Only for public setup!
 single_nat_gateway = true         
 #endpoint_access = "private"    #Set for manuall test [ private | public ]
 

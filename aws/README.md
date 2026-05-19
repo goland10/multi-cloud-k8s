@@ -1,6 +1,8 @@
-# AWS EKS Kubernetes Platform
+# Automated EKS cluster deployment
 
-A production-grade Infrastructure-as-Code platform for deploying and managing multi-environment EKS clusters on AWS, automated end-to-end via GitHub Actions with full OIDC authentication and zero long-lived credentials.
+Terraform + GitHub Actions workflow for deploying EKS clusters.
+
+Supports multiple environments (dev/staging/prod) and a choice of public or private control plane endpoint.
 
 ---
 
@@ -9,7 +11,7 @@ A production-grade Infrastructure-as-Code platform for deploying and managing mu
 - [Architecture Overview](#architecture-overview)
 - [Key Features](#key-features)
 - [Project Structure](#project-structure)
-- [Infrastructure Design — AWS/EKS](#infrastructure-design--awseks)
+- [Infrastructure Design](#infrastructure-design--awseks)
   - [Public Endpoint Mode](#public-endpoint-mode)
   - [Private Endpoint Mode](#private-endpoint-mode)
 - [CI/CD Pipeline](#cicd-pipeline)
@@ -34,8 +36,9 @@ GitHub Actions (OIDC)
 
 The workflow supports **deploy**, **destroy**, and **test-only** actions across multiple isolated environments (`dev-01`, `dev-02`, `prod-01`, etc.). Each environment is fully self-contained with its own VPC, cluster, and Terraform state file.
 
-<video src="https://github.com/user-attachments/assets/0bde3f01-a2b3-4cc4-b43a-92db4bf78924" controls width="100%"></video>
+## Run workflow demo
 
+<video src="https://github.com/user-attachments/assets/0bde3f01-a2b3-4cc4-b43a-92db4bf78924" controls width="100%"></video>
 
 ---
 
@@ -47,11 +50,11 @@ The workflow supports **deploy**, **destroy**, and **test-only** actions across 
 - **Multi-environment:** Isolated clusters per environment (dev-01, dev-02, prod-01, …) with per-environment `.tfvars` files and separate remote state paths
 - **Least-privilege IAM:** Custom IAM policy (`LeastPriviliges.json`) built using `iamlive` + Access Analyzer, granting only the permissions Terraform actually requires
 - **VPC-CNI Prefix Delegation:** Increases pod density per node and accelerates IP assignment — relevant for cost-efficient small instance types like `t3.small`
-- **Cluster connectivity testing:** Automated post-deploy test job validates EKS node and pod readiness, adapting transparently to public or private tunnel mode
+- **Cluster connectivity testing:** Automated post-deploy or standalone test job validates EKS node and pod readiness, adapting transparently to public or private tunnel mode
 
 ---
 
-## Infrastructure Design — AWS/EKS
+## Infrastructure Design
 
 ### Public Endpoint Mode
 
@@ -76,12 +79,12 @@ The cluster API server has no public endpoint. All traffic stays inside the VPC.
 
 ![Private Endpoint Architecture](docs/aws_private_endpoints_access.drawio.png)
 
-**Private cluster connectivity flow (CI/CD):**
+**Private cluster connectivity test flow:**
 1. GitHub Actions authenticates to AWS via OIDC
 2. The bastion instance ID is resolved by tag name
 3. An ephemeral `ed25519` key pair is generated in memory
 4. The public key is pushed to the bastion via `ec2-instance-connect send-ssh-public-key` (valid for 60 seconds)
-5. An SSH tunnel is established: `localhost:6443 → bastion → EKS private endpoint`, proxied through EICE (no open inbound ports on the bastion)
+5. An SSH tunnel is established: `localhost:6443 → bastion → EKS private endpoint`, proxied through EICE
 6. `kubectl` commands run against `https://localhost:6443` with the tunnel active
 
 ---
@@ -111,6 +114,27 @@ validate
 - The `test-aws-cluster` job runs even if `terraform-aws` was skipped (`always()` condition), enabling standalone cluster health checks without re-running Terraform.
 - Terraform **Apply** and **Destroy** are gated to the `main` branch.
 - Terraform state is stored in S3 at `{endpoint_access}/{env_type}/{env_number}/terraform.tfstate`.
+
+---
+
+## Environment Management
+
+Each environment is defined by a `.tfvars` file under `aws/terraform/envs/`.
+
+Sample files:
+
+
+[dev-01.tfvars](./terraform/envs/dev-01.tfvars)   →  cluster: dev-01,  state key: public/dev/01/terraform.tfstate
+
+[dev-02.tfvars](./terraform/envs/dev-02.tfvars)   →  cluster: dev-02,  state key: public/dev/02/terraform.tfstate
+
+[prod-01.tfvars](./terraform/envs/prod-01.tfvars)  →  cluster: prod-01, state key: private/prod/01/terraform.tfstate
+
+Naming convention: `{env_type}-{env_number}.tfvars` — the workflow enforces this by constructing the `-var-file` path from the workflow inputs.
+
+**Before running the workflow you must configure an appropriate tfvars file, adhere to the naming convention and placing it in the `envs` directory.**
+
+Settings in the `Run workflow` menu will overide tfvars files.
 
 ---
 
@@ -148,20 +172,6 @@ validate
 
 ---
 
-## Environment Management
-
-Each environment is defined by a `.tfvars` file under `aws/terraform/envs/`:
-
-```
-dev-01.tfvars   →  cluster: dev-01,  state key: public/dev/01/terraform.tfstate
-dev-02.tfvars   →  cluster: dev-02,  state key: public/dev/02/terraform.tfstate
-prod-01.tfvars  →  cluster: prod-01, state key: private/prod/01/terraform.tfstate
-```
-
-Naming convention: `{env_type}-{env_number}.tfvars` — the workflow enforces this by constructing the `-var-file` path from the workflow inputs.
-
----
-
 ## Prerequisites & Bootstrap
 
 See [docs/prerequisites.md](docs/prerequisites.md) for the full one-time AWS account setup, including OIDC provider creation, IAM role and policy bootstrapping, and S3 state bucket creation.
@@ -195,13 +205,19 @@ Set the following as repository-level **Variables** (not secrets — values are 
 ## Design Decisions
 
 **Why EICE instead of SSM Session Manager for the bastion tunnel?**
+
 EICE supports standard SSH port-forwarding (`-L`), which is required to redirect `kubectl` traffic from `localhost:6443` to the private EKS endpoint. SSM doesn't expose a raw TCP socket in the same way, making it unsuitable for this pattern.
 
 **Why VPC-CNI Prefix Delegation?**
-Default VPC-CNI assigns one IP per pod, which exhausts the limited secondary IP slots on small instance types like `t3.small`. Prefix Delegation assigns a `/28` prefix per node, increasing pod capacity to 110 and reducing the IP assignment latency on pod startup.
+
+Without Prefix Delegation small instance types like `t3.small` support only a limited number of secondary IPs per ENI. Each pod consumes one of those IPs, which exhausts ip pool quickly. 
+
+Prefix Delegation assigns a `/28` prefix (16 addresses) per ENI instead, increasing pod capacity to 110 and reducing IP assignment latency on pod startup.
 
 **Why a 60-second `time_sleep` before CoreDNS and metrics-server?**
+
 Prefix Delegation takes time to propagate after the VPC-CNI addon is active. Without the delay, CoreDNS and metrics-server pods can be scheduled before warm IP addresses are available, causing startup failures.
 
 **Why separate `public/` and `private/` Terraform directories?**
+
 The private endpoint configuration requires additional resources (EICE, bastion, VPC endpoints) that are meaningless and wasteful in a public setup. Splitting into two overlays keeps each configuration minimal, independently testable, and free of conditional `count`/`for_each` hacks.

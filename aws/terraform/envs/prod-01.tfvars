@@ -1,11 +1,10 @@
 # -------------------------------------------------------------------
 # Environment identity
 # -------------------------------------------------------------------
-env_type = "prod"       #Set for manuall test
-env_number = 01         #Set for manuall test
-#env_name = "prod-01"
+#env_type = "prod"       #Set for manuall test
+#env_number = 01         #Set for manuall test
 
-region = "eu-west-1"    #Set for manuall test
+#region = "eu-west-1"    #Set for manuall test
 
 # -------------------------------------------------------------------
 # Labels / cost allocation
@@ -16,7 +15,7 @@ owner = "Golan"
 # Network
 # -------------------------------------------------------------------
 #vpc           = "dev-01"
-vpc_cidr    = "10.11.0.0/16"    #This is the base cidr
+vpc_cidr    = "10.11.0.0/16"            #This is the base cidr
 service_ipv4_cidr = "172.21.0.0/16"     /* Set if you're doing cross-cluster routing 
                                         (e.g. with a service mesh like Istio spanning multiple clusters, or VPC peering between cluster VPCs) */
 
@@ -32,7 +31,7 @@ azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 
 # Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true). Only for public setup!
 single_nat_gateway = false         
-endpoint_access = "private"    #Set for manuall test [ private | public ]
+#endpoint_access = "private"    #Set for manuall test [ private | public ]
 
 # Worker node location
 azs_private_subnets = ["eu-west-1a","eu-west-1b", "eu-west-1c"]  #At least 2 AZs required.
