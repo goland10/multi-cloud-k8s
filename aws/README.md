@@ -209,7 +209,7 @@ Set the following as repository-level **Variables** (not secrets — values are 
 
 EICE supports standard SSH port-forwarding, which is required to redirect `kubectl` traffic from the runner `localhost:6443` to the private EKS endpoint so kubectl doesn't need to be installed on the bastion. 
 
-SSM Session Manager requires provisioning of 3 Interface VPC endpoints (ssm, ssmmessages, ec2messages) + SSM Agent installed and running on the bastion + IAM role allowing SSM access --> more expensive & complex
+SSM Session Manager requires provisioning of 3 Interface VPC endpoints (ssm, ssmmessages, ec2messages) + SSM Agent installed and running on the bastion + IAM role allowing SSM access --> more expensive & complex.
 
 **Why VPC-CNI Prefix Delegation?**
 
