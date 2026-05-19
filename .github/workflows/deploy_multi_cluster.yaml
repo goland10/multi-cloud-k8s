@@ -243,7 +243,7 @@ jobs:
           kubectl get nodes -o wide $KUBECTL_ARGS
           
           echo "Get running pods across all namespaces..."
-          kubectl get pods -A $KUBECTL_ARGS
+          kubectl get pods -Ao wide $KUBECTL_ARGS
           
   # ─────────────────────────────────────────────
   # GCP / GKE Job
