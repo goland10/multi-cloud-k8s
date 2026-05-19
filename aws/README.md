@@ -207,13 +207,15 @@ Set the following as repository-level **Variables** (not secrets — values are 
 
 **Why EICE instead of SSM Session Manager for the bastion tunnel?**
 
-EICE supports standard SSH port-forwarding (`-L`), which is required to redirect `kubectl` traffic from `localhost:6443` to the private EKS endpoint. SSM doesn't expose a raw TCP socket in the same way, making it unsuitable for this pattern.
+EICE supports standard SSH port-forwarding, which is required to redirect `kubectl` traffic from the runner `localhost:6443` to the private EKS endpoint so kubectl doesn't need to be installed on the bastion. 
+
+SSM Session Manager requires provisioning of 3 Interface VPC endpoints (ssm, ssmmessages, ec2messages) + SSM Agent installed and running on the bastion + IAM role allowing SSM access --> more expensive & complex
 
 **Why VPC-CNI Prefix Delegation?**
 
 Without Prefix Delegation each worker node is able to support a limited number of ip addresses (depends on the instance type).
 
-For example: small instance types like `t3.small` can provide up to 11 addresses, meaning up to 11 pods can run on this worker node. This limitation leads to quick ip address exhaustion which might cause to under-utilized worker node. 
+For example: small instance type like `t3.small` can provide up to 11 addresses, meaning up to 11 pods can run on this worker node. This limitation leads to quick ip address exhaustion which might cause to under-utilized worker node. 
 
 Prefix Delegation assigns a `/28` prefix (16 addresses) per ENI instead, increasing pod capacity to 110 and reducing IP assignment latency on pod startup.
 
