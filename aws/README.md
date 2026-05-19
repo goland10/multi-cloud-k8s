@@ -211,7 +211,9 @@ EICE supports standard SSH port-forwarding (`-L`), which is required to redirect
 
 **Why VPC-CNI Prefix Delegation?**
 
-Without Prefix Delegation small instance types like `t3.small` support only a limited number of secondary IPs per ENI. Each pod consumes one of those IPs, which exhausts ip pool quickly. 
+Without Prefix Delegation each worker node is able to support a limited number of ip addresses (depends on the instance type).
+
+For example: small instance types like `t3.small` can provide up to 11 addresses, meaning up to 11 pods can run on this worker node. This limitation leads to quick ip address exhaustion which might cause to under-utilized worker node. 
 
 Prefix Delegation assigns a `/28` prefix (16 addresses) per ENI instead, increasing pod capacity to 110 and reducing IP assignment latency on pod startup.
 
