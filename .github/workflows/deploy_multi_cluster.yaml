@@ -239,10 +239,10 @@ jobs:
             KUBECTL_ARGS=""
           fi
 
-          echo "Get cluster nodes..."
+          echo -e "Get cluster nodes...\n"
           kubectl get nodes -o wide $KUBECTL_ARGS
           
-          echo "Get running pods across all namespaces..."
+          echo -e "\nGet running pods across all namespaces...\n"
           kubectl get pods -Ao wide $KUBECTL_ARGS
           
   # ─────────────────────────────────────────────
