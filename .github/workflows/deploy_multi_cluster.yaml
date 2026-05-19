@@ -62,7 +62,7 @@ jobs:
           echo "Validating environment number: $ENV_NUM"
           
           # Match exactly two digits from 01 to 99
-          if [[ "$ENV_NUM" =~ ^[0-9]{2}$ ]] && [ ! "$ENV_NUM" = "00" ]; then
+          if [[ ! "$ENV_NUM" =~ ^[0-9]{2}$ ]] || [ "$ENV_NUM" = "00" ]; then
             echo "❌ Error: env_number must be a two-digit integer zero-padded between 01 and 99 (e.g., 01, 02, 15)."
             echo "Received: '$ENV_NUM'"
             exit 1
