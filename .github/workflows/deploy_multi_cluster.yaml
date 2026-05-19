@@ -36,7 +36,7 @@ on:
         description: "Control plane endpoint access [AWS only]"
         required: false
         type: choice
-        default: "private"
+        default: "public"
         options:
           - public
           - private
@@ -230,7 +230,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────
       # DYNAMIC EXECUTION (Applies arguments conditionally)
       # ─────────────────────────────────────────────────────────────
-      - name: Test Cluster is Operational
+      - name: Test Cluster is Operational (run kubectl)
         run: |
           # If private, append the secure local port overrides. If public, leave empty.
           if [ "$IS_PRIVATE" = "true" ]; then
@@ -242,7 +242,7 @@ jobs:
           printf "Get cluster nodes...\n\n"
           kubectl get nodes -o wide $KUBECTL_ARGS
           
-          printf "\nGet running pods across all namespaces...\n\n"
+          printf "\nGet pods across all namespaces...\n\n"
           kubectl get pods -Ao wide $KUBECTL_ARGS
           
   # ─────────────────────────────────────────────
