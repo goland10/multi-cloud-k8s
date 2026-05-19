@@ -253,7 +253,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: gcp
+        working-directory: ./gcp
 
     env:
       TF_VAR_project_id: ${{ vars.GCP_PROJECT_ID }}
