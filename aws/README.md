@@ -135,7 +135,7 @@ Naming convention: `{env_type}-{env_number}.tfvars` — the workflow enforces th
 
 **Before running the workflow you must configure an appropriate tfvars file, adhere to the naming convention and placing it in the `envs` directory.**
 
-Settings in the `Run workflow` menu will overide tfvars files.
+Settings in the `Run workflow` menu will override tfvars files.
 
 ---
 
