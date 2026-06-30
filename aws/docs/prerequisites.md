@@ -17,7 +17,7 @@
     ```
 3. Create the trust policy file
     ```bash
-    cat << EOF > ./prerequisites/trust-policy.json
+    cat << EOF > ./trust-policy.json
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -46,7 +46,7 @@
     ```bash
     aws iam create-role \
       --role-name $ROLE_NAME \
-      --assume-role-policy-document file://./prerequisites/trust-policy.json \ 
+      --assume-role-policy-document file://./trust-policy.json \ 
       --description "GitHub Actions role for EKS Terraform deployments"
     ```
 5. Create policies
@@ -54,7 +54,7 @@
     aws iam create-policy \
       --policy-name k8sDeploy-LeastPriviliges \
       --description "Merge of private and public tested policies. Created by using iamlive + Access Analyzer + manual tests." \
-      --policy-document file://./prerequisites/LeastPriviliges.json
+      --policy-document file://./LeastPriviliges.json
     ```
 
 5. Attach k8sDeploy-LeastPriviliges policy to the role

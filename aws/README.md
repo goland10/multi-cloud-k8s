@@ -48,7 +48,7 @@ The workflow supports **deploy**, **destroy**, and **test-only** actions across 
 - **Dual endpoint modes:** Supports both public and fully air-gapped private EKS clusters, selectable at deploy time
 - **Private cluster access:** Keyless SSH tunnel through an EC2 Instance Connect Endpoint (EICE) and ephemeral bastion host — no open inbound ports, no stored SSH keys
 - **Multi-environment:** Isolated clusters per environment (dev-01, dev-02, prod-01, …) with per-environment `.tfvars` files and separate remote state paths
-- **Least-privilege IAM:** Custom IAM policy (`LeastPriviliges.json`) built using `iamlive` + Access Analyzer, granting only the permissions Terraform actually requires
+- **Least-privilege IAM:** Custom IAM policy (`LeastPriviliges.json`) built using `iamlive` + Access Analyzer + manual tests, granting only the permissions Terraform actually requires
 - **VPC-CNI Prefix Delegation:** Increases pod density per node and accelerates IP assignment — relevant for cost-efficient small instance types like `t3.small`
 - **Cluster connectivity testing:** Automated post-deploy or standalone test job validates EKS node and pod readiness, adapting transparently to public or private tunnel mode
 
@@ -135,7 +135,7 @@ Naming convention: `{env_type}-{env_number}.tfvars` — the workflow enforces th
 
 **Before running the workflow you must configure an appropriate tfvars file, adhere to the naming convention and placing it in the `envs` directory.**
 
-Settings in the `Run workflow` menu will override tfvars files.
+Settings in the `Run workflow` menu will **override** the settings in tfvars files.
 
 ---
 
