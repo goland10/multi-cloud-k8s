@@ -2,7 +2,7 @@
 
 GitHub Actions / Terraform workflow for deploying EKS clusters.
 
-Supports multiple environments (dev/staging/prod) and a choice of public or private control plane endpoint.
+Supports multiple environments (dev/staging/prod) and a choice of *public* or *private* control plane endpoint.
 
 ---
 
