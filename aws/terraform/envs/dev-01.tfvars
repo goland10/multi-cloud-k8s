@@ -15,8 +15,8 @@ owner = "Yaniv"
 # Network
 # -------------------------------------------------------------------
 #vpc           = "dev-01"
-vpc_cidr    = "10.10.0.0/16"            #This is the base cidr
-service_ipv4_cidr = "172.20.0.0/16"     /* Set if you're doing cross-cluster routing 
+vpc_cidr    = "10.11.0.0/16"            #This is the base cidr
+service_ipv4_cidr = "172.21.0.0/16"     /* Set if you're doing cross-cluster routing 
                                         (e.g. with a service mesh like Istio spanning multiple clusters, or VPC peering between cluster VPCs) */
 
 # -------------------------------------------------------------------
@@ -27,7 +27,7 @@ service_ipv4_cidr = "172.20.0.0/16"     /* Set if you're doing cross-cluster rou
 # Location
 # -------------------------------------------------------------------
 # AZs for NAT gateway/s. Only for public setup!
-azs_public_subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]       
+azs_public_subnets = ["eu-west-1a", "eu-west-1b"] #, "eu-west-1c"]       
 
 # Deploy NAT gateway in every public subnet (false) or deploy only 1 NAT gateway for all AZS (true). Only for public setup!
 single_nat_gateway = true         

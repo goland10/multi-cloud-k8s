@@ -16,26 +16,26 @@ variable "env_number" {
   type        = number
 }
 
-#######################################
+##########################
 # Tags / cost allocation
-#######################################
+##########################
 
 variable "owner" {
   type        = string
   description = "Environment owner"
 }
 
-################
+####################
 # Cluster Privacy
-################
+####################
 
 variable "endpoint_access" {
-  description = "Whether the GKE cluster should be private"
+  description = "Whether the cluster should be private"
   type        = string
 }
 
 variable "azs_public_subnets" {
-  description = "A list of availability zones names or (ids in the region) to be used by the NAT gateway"
+  description = "A list of availability zones names (or ids in the region) to be used by the NAT gateway"
   type        = list(string)
   default     = []
 
@@ -51,12 +51,12 @@ variable "single_nat_gateway" {
 }
 
 variable "azs_private_subnets" {
-  description = "A list of availability zones names or (ids in the region) to be used by the data plane"
+  description = "A list of availability zones names (or ids in the region) to be used by the data plane"
   type        = list(string)
   #default     = []
   validation {
     condition     = length(var.azs_private_subnets) >= 2
-    error_message = "The EKS requires at least 2 availability zone."
+    error_message = "EKS requires at least 2 availability zone."
   }
 }
 

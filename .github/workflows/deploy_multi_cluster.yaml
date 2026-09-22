@@ -106,6 +106,7 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
+            -backend-config="region=${{ vars.AWS_REGION }}" \
             -backend-config="key=${{ inputs.endpoint_access }}/${{ inputs.env_type }}/${{ inputs.env_number }}/terraform.tfstate" # ex. public/dev/01/terraform.tfstate
 
       - name: Terraform Validate

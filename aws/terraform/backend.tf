@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
     bucket = "github-k8s-terraform-state"
-    region = "eu-west-1"
-    #key    = "dev/01/terraform.tfstate"
+    #region = "eu-west-1"
+    #key    = "public/dev/01/terraform.tfstate"
   }
 }
 
