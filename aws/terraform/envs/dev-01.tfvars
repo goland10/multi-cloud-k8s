@@ -42,7 +42,7 @@ azs_private_subnets = ["eu-west-1a","eu-west-1b"]         #At least 2 AZs requir
 instance_types = ["t3.small"]    # t3.medium for dev (minimum for testing), t3.large or m5.large for prod
 min_size     = 1
 max_size     = 3
-desired_size = 1
+desired_size = 2
 
 # -------------------------------------------------------------------
 # EKS cluster behavior
