@@ -7,7 +7,8 @@
     GITHUB_REPO="multi-cloud-k8s"
     ROLE_NAME="github-actions-eks-role"
     REGION="eu-west-1"
-    BUCKET_NAME="github-k8s-terraform-state"    
+    BUCKET_NAME="github-k8s-terraform-state"
+    DDB_TABLE_NAME="github-k8s-terraform-state-lock"
     ```
 2. Create OIDC Provider:
     ```bash
@@ -67,7 +68,17 @@
     AWS_ROLE_ARN=$(aws iam get-role --role-name $ROLE_NAME --query Role.Arn --output text)
     AWS_TF_STATE_BUCKET=$BUCKET_NAME
     ```
-7. Create bucket to store the state files.
+7. Create the S3 bucket to store the state files.
     ```bash
     aws s3 mb --region $REGION s3://$BUCKET_NAME
+    ```
+
+8. Create the DynamoDB table used for Terraform state locking.
+    ```bash
+    aws dynamodb create-table \
+      --table-name $DDB_TABLE_NAME \
+      --attribute-definitions AttributeName=LockID,AttributeType=S \
+      --key-schema AttributeName=LockID,KeyType=HASH \
+      --billing-mode PAY_PER_REQUEST \
+      --region $REGION
     ```

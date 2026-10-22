@@ -114,7 +114,7 @@ validate
 
 - The `test-aws-cluster` job runs even if `terraform-aws` was skipped (`always()` condition), enabling standalone cluster health checks without re-running Terraform.
 - Terraform **Apply** and **Destroy** are gated to the `main` branch.
-- Terraform state is stored in S3 at `{endpoint_access}/{env_type}/{env_number}/terraform.tfstate`.
+- Terraform state is stored in S3 at `{endpoint_access}/{env_type}/{env_number}/terraform.tfstate`, protected by a DynamoDB lock table for safe concurrent updates.
 
 ---
 
@@ -198,7 +198,7 @@ Set the following as repository-level **Variables** (not secrets — values are 
 | Bastion SSH access | EC2 Instance Connect + ephemeral key (60-second window) — no stored private keys |
 | Private cluster API | Zero inbound internet exposure; accessed only via SSH tunnel through EICE |
 | IAM permissions | Custom least-privilege policy built with `iamlive` and validated with Access Analyzer |
-| Terraform state | S3 backend with per-environment path isolation |
+| Terraform state | S3 backend with per-environment path isolation and DynamoDB locking |
 | Branch protection | Apply and Destroy steps are gated to `refs/heads/main` |
 
 ---
